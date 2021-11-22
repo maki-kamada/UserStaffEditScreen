@@ -1,67 +1,92 @@
 <template>
 <div class="container">
     <form>
-        <div class="container">
-            <!-- 会社名フォーム -->
-            <div>
-                <label for="company">会社名</label>
-                <input type="text" v-model="company">
-                <span>{{ errors.company }}</span>
+        <table>
+            <div class="container">
+                <!-- 会社名フォーム -->
+                <tr>
+                    <div>
+                        <th><label for="company">会社名</label></th>
+                        <td><input type="text" v-model="company"></td>
+                        <td class="errMsg"><span>{{ errors.company }}</span></td>
+                    </div>
+                </tr>
+                <!-- 代表者名フォーム -->
+                <tr>
+                    <div>
+                        <th><label for="president">代表者名</label></th>
+                        <td><input type="text" v-model="president"></td>
+                        <td class="errMsg"><span>{{ errors.president }}</span></td>
+                    </div>
+                </tr>
+                <!-- 郵便番号フォーム -->
+                <tr>
+                    <div>
+                        <th><label for="zipcode">郵便番号</label></th>
+                        <td><input class="numberInput" type="text" v-model="zipcode1"></td>
+                        <td><span class="hyphen">―</span></td>
+                        <td><input class="numberInput" type="text" v-model="zipcode2"></td>
+                        <td class="errMsg"><span>{{ errors.zipcode }}</span></td>
+                    </div>
+                </tr>
+                <!-- 住所１フォーム -->
+                <tr>
+                    <div>
+                        <th><label for="prefecture">住所１(都道府県)</label></th>
+                        <td><input type="text" v-model="prefecture"></td>
+                        <td class="errMsg"><span>{{ errors.prefecture }}</span></td>
+                    </div>
+                </tr>
+                <!-- 住所２フォーム -->
+                <tr>
+                    <div>
+                        <th><label for="city">住所２(市区町村)</label></th>
+                        <td><input type="text" v-model="city"></td>
+                        <td class="errMsg"><span>{{ errors.city }}</span></td>
+                    </div>
+                </tr>
+                <!-- 住所３フォーム -->
+                <tr>
+                    <div>
+                        <th><label for="building">住所３(建物名等)</label></th>
+                        <td><input type="text" v-model="building"></td>
+                        <td class="errMsg"><span>{{ errors.building }}</span></td>
+                    </div>
+                </tr>
+                <!-- 電話番号フォーム -->
+                <tr>
+                    <div class="aaa">
+                        <th><label for="tel">電話番号</label></th>
+                        <td><input class="numberInput" type="text" v-model="tel1"></td>
+                        <td><span class="hyphen">―</span></td>
+                        <td><input class="numberInput" type="text" v-model="tel2"></td>
+                        <td><span class="hyphen">―</span></td>
+                        <td><input class="numberInput" type="text" v-model="tel3"></td>
+                        <td class="errMsg"><span>{{ errors.tel }}</span></td>
+                    </div>
+                </tr>
+                <!-- FAXフォーム -->
+                <tr>
+                    <div>
+                        <th><label for="fax">FAX</label></th>
+                        <td><input class="numberInput" type="text" v-model="fax1"></td>
+                        <td><span class="hyphen">―</span></td>
+                        <td><input class="numberInput" type="text" v-model="fax2"></td>
+                        <td><span class="hyphen">―</span></td>
+                        <td><input class="numberInput" type="text" v-model="fax3"></td>
+                        <td class="errMsg"><span>{{ errors.fax }}</span></td>
+                    </div>
+                </tr>
+                <!-- e-mailフォーム -->
+                <tr>
+                    <div>
+                        <th><label for="mail">e-mail</label></th>
+                        <td><input type="text" v-model="mail"></td>
+                        <td class="errMsg"><span>{{ errors.mail }}</span></td>
+                    </div>
+                </tr>
             </div>
-            <!-- 代表者名フォーム -->
-            <div>
-                <label for="president">代表者名</label>
-                <input type="text" v-model="president">
-                <span>{{ errors.president }}</span>
-            </div>
-            <!-- 郵便番号フォーム -->
-            <div>
-                <label for="zipcode">郵便番号</label>
-                <input type="text" v-model="zipcode1">
-                <input type="text" v-model="zipcode2">
-                <span>{{ errors.zipcode }}</span>
-            </div>
-            <!-- 住所１フォーム -->
-            <div>
-                <label for="prefecture">住所１(都道府県)</label>
-                <input type="text" v-model="prefecture">
-                <span>{{ errors.prefecture }}</span>
-            </div>
-            <!-- 住所２フォーム -->
-            <div>
-                <label for="city">住所２(市区町村)</label>
-                <input type="text" v-model="city">
-                <span>{{ errors.city }}</span>
-            </div>
-            <!-- 住所３フォーム -->
-            <div>
-                <label for="building">住所３(建物名等)</label>
-                <input type="text" v-model="building">
-                <span>{{ errors.building }}</span>
-            </div>
-            <!-- 電話番号フォーム -->
-            <div>
-                <label for="tel">電話番号</label>
-                <input type="text" v-model="tel1">
-                <input type="text" v-model="tel2">
-                <input type="text" v-model="tel3">
-                <span>{{ errors.tel }}</span>
-            </div>
-            <!-- FAXフォーム -->
-            <div>
-                <label for="fax">FAX</label>
-                <input type="text" v-model="fax1">
-                <input type="text" v-model="fax2">
-                <input type="text" v-model="fax3">
-                <span>{{ errors.fax }}</span>
-            </div>
-            <!-- e-mailフォーム -->
-            <div>
-                <label for="mail">e-mail</label>
-                <input type="text" v-model="mail">
-                <span>{{ errors.mail }}</span>
-            </div>
-        </div>
+        </table>
     </form>
     <div class="register">
         <button type="button" :disabled=isDisabled>送信</button>
@@ -267,30 +292,45 @@ export default {
 .container {
     width: 380px;
     margin: 50px auto;
-  }
-  label {
-    display: block;
-    margin: 15px 0px;
-  }
-  input {
-    width: 100%;
-    height: 30px;
+}
+label {
+    display: inline-block;
+    white-space: nowrap;
+}
+input {
+    width: 300px;
     font-size: 20px;
-  }
-  button {
-    width: 130px;
+    padding: 0px;
+    margin-bottom: 15px;
+}
+button {
+    width: 60px;
     height: 40px;
-  }
-  .register {
+}
+.register {
     width: 100%;
     text-align: center;
-    margin: 50px 0;
-  }
-  span {
-    height: 20px;
+}
+span {
     font-size: 14px;
     color: red;
     width: 90%;
     display: block;
-  }
+}
+.hyphen {
+    width: 30px;
+}
+th {
+    display: block;
+    text-align: left;
+    margin: 0px;
+}
+.numberInput {
+    width: 100px;
+}
+.errMsg {
+    display: flex;
+    vertical-align: bottom;
+    text-align: left;
+}
 </style>
