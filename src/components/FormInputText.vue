@@ -42,24 +42,17 @@ export default {
     props:['placeholder', 'name', 'value', 'required', 'staff'],
     computed: {
       requiredCheck: function () {
-          
            this.$emit('update-status', this.staff)
            return this.value.trim()
         },
       kanaValidation: function () {
-            this.$emit('update-status', this.staff);
             var kanaPattern = /^[\u30a0-\u30ff]+$/;
-            var flg = false
-            if(kanaPattern.test(this.value.trim())){
-                // return false
+            var result = kanaPattern.test(this.value.trim());
+            this.staff[this.name] = result;
+            this.$emit('update-status', this.staff);
+            return result
 
-            }else{
-                // return true
-                flg = true
-            }
-            console.log(flg)
-            return flg
-        },
+      },
       mailValidation: function () {
             this.value.trim()
             var mailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
