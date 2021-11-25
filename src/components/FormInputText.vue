@@ -1,13 +1,28 @@
 <template>
-  <div class='staff'>
-    <input :type="type" :v-model="inputValue" :placeholder="placeholder" :name="name" />
+  <div>
+    <!-- nameが型の種類、required、maxlength -->
+    <input
+     :value="value"
+     @input="$emit('input', $event.target.value)"
+     required
+     :placeholder="placeholder" 
+     :name="name" />
     <span
       class="error-text"
-      v-if="placeholder.match(/^[\u30a0-\u30ff]+$/)"
-      v-show="kanaValidation()"
+      v-if="name == 'kana'" 
+      v-show="kanaValidation"
       >カタカナで入力してください。</span
     >
-    <span class="error-text" v-if="requiredCheck()"
+    <span
+      class="error-text"
+      v-else-if="name == 'mail'"
+      v-show="mailValidation"
+      >正しいメール形式で入力してください。</span
+    >
+    <span
+      class="error-text"
+      v-if="!required"
+      v-show="!requiredCheck"
       >必須入力項目です。</span
     >
   </div>
@@ -17,53 +32,70 @@
 // import Form from '../views/Staff.vue'
 export default {
     name: 'FormInputText',
-    props:{
-        placeholder: String,
-        name: String
-    },
     data() {
-        return{
-            inputValue: '',
-            requiredFlag: false,
-            kanaFlag: false,
-        }
+      return {
+        requiredFlg: false,
+        kanaFlg: false,
+        mailFlg: false
+      }
     },
-    methods: {
-        requiredCheck: function () {
-           this.inputValue.trim()
-           return this.inputValue.length > 0 ? false :true
+    props:['placeholder', 'name', 'value', 'required', 'staff'],
+    computed: {
+      requiredCheck: function () {
+          
+           this.$emit('update-status', this.staff)
+           return this.value.trim()
         },
-        kanaValidation: function () {
-            this.inputValue.trim()
+      kanaValidation: function () {
+            this.$emit('update-status', this.staff);
             var kanaPattern = /^[\u30a0-\u30ff]+$/;
-            if(this.inputValue.match(kanaPattern)){
+            var flg = false
+            if(kanaPattern.test(this.value.trim())){
+                // return false
+
+            }else{
+                // return true
+                flg = true
+            }
+            console.log(flg)
+            return flg
+        },
+      mailValidation: function () {
+            this.value.trim()
+            var mailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            if(this.value.match(mailPattern)){
                 return false
             }else{
                 return true
             }
         },
-
     }
-//     methods: {
+    // methods: {
+    //     requiredCheck: function () {
+    //       console.log("aaaa")
+    //        this.value.trim()
+    //        return this.value.length > 0 ? false :true
+    //     },
+    //     kanaValidation: function () {
+    //         this.value.trim()
+    //         var kanaPattern = /^[\u30a0-\u30ff]+$/;
+    //         if(this.value.match(kanaPattern)){
+    //             return false
+    //         }else{
+    //             return true
+    //         }
+    //     },
+    //     mailValidation: function () {
+    //         this.value.trim()
+    //         var mailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    //         if(this.value.match(mailPattern)){
+    //             return false
+    //         }else{
+    //             return true
+    //         }
+    //     },
+    // },
     
-//       validationPresence: function () {
-//         this.staff[this.column] = this.inputValue.trim();
-//         this.$emit('update-status-from-child', this.satff);
-//         return this.inputValue.trim();
-
-//     },
-//       validationKana: function () {
-//         var kanaPattern = /^[\u30a0-\u30ff]+$/;
-//         var result = kanaPattern.test(this.inputValue.trim());
-//         this.staff[this.column] = result;
-//         this.$emit('update-status-from-child', this.staff);
-//         return result;
-//     }
-//   },
-  
-    
-
-
 }
 
 </script>
