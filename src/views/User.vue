@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <div class="container">
-      <table>
+    <p>顧客マスタ</p> 
+    <div class="item datatable">
+      <table class="data">
         <thead>
           <tr>
             <th class="row1 fixed">ID</th>
@@ -16,12 +17,11 @@
         </tbody>
       </table>
       <!-- <Table row1="ID" row2="会社名" :items="users"></Table> -->
-      <button @click="showData" type="button">dataをshow!</button>
+      <!-- <button @click="showData" type="button">dataをshow!</button> -->
     </div>
-
+    <div class="item">
     <form>
-      <table>
-        <div class="container">
+      <table class="form">
           <!-- 会社名フォーム -->
           <tr>
             <div>
@@ -126,11 +126,11 @@
               </td>
             </div>
           </tr>
-        </div>
       </table>
     </form>
     <div class="register">
       <button type="button" :disabled="isDisabled">送信</button>
+    </div>
     </div>
   </div>
 </template>
@@ -144,6 +144,21 @@ export default {
 //   components: {
 //     Table,
 //   },
+beforeCreate() {
+    this.axios
+        .get("/api/UserListFunction")
+        .then((res) => {
+          console.log(res.data);
+          var string1 = JSON.stringify(res.data);
+          let arr = JSON.parse(string1);
+          console.log(arr);
+          this.items = arr;
+        })
+        .catch((e) => {
+          alert(e);
+        });
+
+},
   data() {
     return {
       company: "",
@@ -169,22 +184,6 @@ export default {
       errors: {},
       items: null,
     };
-  },
-  methods: {
-    showData() {
-      this.axios
-        .get("/api/Function1")
-        .then((res) => {
-          console.log(res.data);
-          var string1 = JSON.stringify(res.data);
-          let arr = JSON.parse(string1);
-          console.log(arr);
-          this.items = arr;
-        })
-        .catch((e) => {
-          alert(e);
-        });
-    },
   },
   computed: {
     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
@@ -422,8 +421,57 @@ export default {
 
 <style scoped>
 .container {
-  width: 380px;
+  width: 100%;
   margin: 50px auto;
+  text-align: center;
+}
+.item {
+  display: inline-block;
+  vertical-align: top;
+  margin: auto 20px;
+}
+.datatable {
+  overflow-y: scroll;
+}
+.data th {
+  border: solid 1px;
+  padding: 10px;
+}
+.data td {
+  padding: 10px;
+  border-right: solid 1px;
+}
+table.data {
+  border: solid 1px;
+  border-collapse: collapse;
+  width: 600px;
+  height: 50px;
+}
+.row1 {
+  width: 30%;
+}
+.row2 {
+  width: 70%;
+}
+.fixed {
+  position: sticky;
+  top: 0;
+  color: #fff;
+  background: #333;
+}
+.fixed::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
 }
 label {
   display: inline-block;
@@ -452,7 +500,7 @@ span {
 .hyphen {
   width: 30px;
 }
-th {
+.form th {
   display: block;
   text-align: left;
   margin: 0px;

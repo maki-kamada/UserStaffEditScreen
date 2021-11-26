@@ -26,7 +26,7 @@
         <table class="form">
           <!-- 社員コードフォーム -->
           <tr>
-            <div class="test">
+            <div>
               <th><label for="code">社員コード</label></th>
               <td><input type="text" v-model="code" /></td>
               <td class="errMsg">
