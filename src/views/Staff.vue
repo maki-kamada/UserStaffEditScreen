@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <p>社員マスタ</p>
-    <div class="items1 datatable">
+    <div class="item datatable">
       <table class="data">
         <thead>
           <tr>
@@ -20,13 +20,13 @@
       </table>
       </div>
       <!-- <Table row1="社員コード" row2="社員名" :items= "staffs" ></Table> -->
-      <button @click="getIp" type="button">IPをGET!</button>
-    <div class="items2">
+      <!-- <button @click="getIp" type="button">IPをGET!</button> -->
+    <div class="item">
       <form>
         <table class="form">
           <!-- 社員コードフォーム -->
           <tr>
-            <div>
+            <div class="test">
               <th><label for="code">社員コード</label></th>
               <td><input type="text" v-model="code" /></td>
               <td class="errMsg">
@@ -148,6 +148,21 @@ export default {
   // components: {
   //     Table
   // },
+  beforeCreate() {
+      this.axios
+        .get("/api/StaffListFunction")
+        .then((res) => {
+          console.log(res.data);
+          var string1 = JSON.stringify(res.data);
+          let arr = JSON.parse(string1);
+          console.log(arr);
+          this.items = arr;
+        })
+        .catch((e) => {
+          alert(e);
+        });
+
+  },
   data() {
     return {
       code: "",
@@ -440,30 +455,29 @@ export default {
   margin: 50px auto;
   text-align: center;
 }
-.items1 {
-  /* display: inline-block; */
-  text-align: left;
-  /* vertical-align: top;
-  margin: auto 20px; */
+.item {
+  display: inline-block;
+  vertical-align: top;
+  margin: auto 20px;
 }
-.items2 {
+/* .items2 {
    text-align: right; 
-}
+} */
 .datatable {
   overflow-y: scroll;
 }
-th.data {
+.data th {
   border: solid 1px;
   padding: 10px;
 }
-td.data {
+.data td {
   padding: 10px;
   border-right: solid 1px;
 }
 table.data {
   border: solid 1px;
   border-collapse: collapse;
-  width: 450px;
+  width: 600px;
   height: 50px;
 }
 .row1 {
@@ -519,11 +533,22 @@ span {
 .hyphen {
   width: 30px;
 }
-th.form {
+.form th {
   display: block;
   text-align: left;
   margin: 0px;
 }
+/* .form td {
+    display: block;
+} */
+/* tr.form {
+   display: flex;
+   flex-direction: column; 
+} */
+/* .test {
+   display: flex;
+   flex-direction: column; 
+} */
 .numberInput {
   width: 100px;
 }
