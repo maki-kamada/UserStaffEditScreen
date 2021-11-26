@@ -1,5 +1,12 @@
 <template>
+
+
 <div class="container">
+    <div class="items">
+    <Table row1="社員コード" row2="社員名" :items= "items"></Table>
+    <button @click="getIp" type="button">IPをGET!</button>
+    </div>
+    <div class="items">
     <form>
         <table>
             <div class="container">
@@ -92,14 +99,21 @@
     <div class="register">
         <button type="button" :disabled=isDisabled>送信</button>
     </div>
+    </div>
+    
 </div>
 </template>
 
 
 
 <script>
+import Table from '@/components/Table.vue'
+
 
 export default {
+    components: {
+        Table
+    },
     data() {
         return {
             code: '',
@@ -124,8 +138,29 @@ export default {
             cityFlg: false,
             telFlg: false,
             mailFlg: false,
-            errors: {}
+            errors: {},
+            // items: [
+            //     { code: 100, last_name: "aaa" },
+            //     { code: 200, last_name: "bbb" },
+            // ],
+            items: null
         }
+    },
+    methods: {
+        getIp() {
+            
+        this.axios.get('/api/Function1')
+          .then((res) => {
+            console.log(res.data)
+            var string1 = JSON.stringify(res.data);
+            let arr = JSON.parse(string1);
+            console.log(arr);
+            this.items = arr;
+          })
+          .catch((e) => {
+            alert(e);
+          });
+      }
     },
     computed: {     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
         isDisabled() {
@@ -315,8 +350,16 @@ export default {
 
 <style scoped>
 .container {
-    width: 380px;
+    width: 100%;
     margin: 50px auto;
+    overflow: hidden;
+}
+.items {
+    float: left;
+}
+table {
+    margin-left: auto;
+    margin-right: auto;
 }
 label {
     display: inline-block;
