@@ -10,7 +10,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.index">
+          <tr v-for="item in items" :key="item.userID"  @click="selectRow(item)"  :class="{'highlight': (item == selectedUser)}">
             <td class="row1">{{ item.userID }}</td>
             <td class="row2">{{ item.companyName }}</td>
           </tr>
@@ -182,8 +182,32 @@ beforeCreate() {
       telFlg: false,
       mailFlg: false,
       errors: {},
-      items: null,
+      selectedUser: null,
+      items: [],
     };
+  },
+  methods: {
+    selectRow(item) {
+      this.selectedUser = item;
+      this.company = item.companyName;
+      this.president = item.presidentName;
+      this.zipcode1 = String(item.zipCode).slice(0,3);
+      this.zipcode2 = String(item.zipCode).slice(3,7);
+      this.prefecture = item.prefecture;
+      this.city = item.city;
+      this.building = item.building;
+      var tel = item.tel.split('-');
+      this.tel1 = tel[0];
+      this.tel2 = tel[1];
+      this.tel3 = tel[2];
+      var fax = item.fax.split('-');
+      this.fax1 = fax[0];
+      this.fax2 = fax[1];
+      this.fax3 = fax[2];
+      this.mail = item.mail;
+
+    }
+
   },
   computed: {
     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
@@ -440,6 +464,12 @@ beforeCreate() {
 .data td {
   padding: 10px;
   border-right: solid 1px;
+}
+.highlight {
+  background: rgb(230, 230, 230);
+}
+tr:hover{
+  cursor: pointer;
 }
 table.data {
   border: solid 1px;
