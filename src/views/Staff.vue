@@ -10,9 +10,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.index">
-            <td class="row1">{{ item.staffID }}</td>
-            <td class="row2">
+          <tr v-for="item in items" :key="item.staffID" @click="selectRow(item)"  :class="{'highlight': (item == selectedStaff)}">
+            <td class="row1" >{{ item.staffID }}</td>
+            <td class="row2" >
               {{ item.staffLastName }}{{ item.staffFirstName }}
             </td>
           </tr>
@@ -38,8 +38,8 @@
           <tr>
             <div>
               <th><label for="name">社員名</label></th>
-              <td><input type="text" v-model="last_name" /></td>
-              <td><input type="text" v-model="first_name" /></td>
+              <td><input class="inputdev" type="text" v-model="last_name" /></td>
+              <td><input class="inputdev" type="text" v-model="first_name" /></td>
               <td class="errMsg">
                 <span>{{ errors.name }}</span>
               </td>
@@ -50,8 +50,8 @@
           <tr>
             <div>
               <th><label for="namekana">社員名（カナ）</label></th>
-              <td><input type="text" v-model="last_name_kana" /></td>
-              <td><input type="text" v-model="first_name_kana" /></td>
+              <td><input class="inputdev" type="text" v-model="last_name_kana" /></td>
+              <td><input class="inputdev" type="text" v-model="first_name_kana" /></td>
               <td class="errMsg">
                 <span>{{ errors.namekana }}</span>
               </td>
@@ -133,7 +133,7 @@
       </form>
 
       <div class="register">
-        <button type="button" :disabled="isDisabled">送信</button>
+        <button type="button" :disabled="isDisabled" @click="post">送信</button>
       </div>
     </div>
   </div>
@@ -188,19 +188,38 @@ export default {
       telFlg: false,
       mailFlg: false,
       errors: {},
+      selectedStaff: null,
       // items: [
       //     { code: 100, last_name: "aaa" },
       //     { code: 200, last_name: "bbb" },
       // ],
-      items: null,
+      items: [],
     };
   },
   methods: {
-    getIp() {
+    post() {
+      var now = new Date();
       this.axios
-        .get("/api/StaffListFunction")
+        .post("/api/StaffListFunction/",{
+            staffID: this.code,
+            staffLastName: this.last_name,
+            staffFirstName: this.first_name,
+            staffLastNameKana: this.last_name_kana,
+            staffFirstNameKana: this.first_name_kana,
+            zipCode: this.zipcode1+this.zipcode2,
+            prefecture: this.prefecture,
+            city: this.city,
+            building: this.building,
+            tel: this.tel1+this.tel2+this.tel3,
+            mail: this.mail,
+            deleteDate: null,
+            lastUpdate: now,
+            lastAdd: now
+        }, {
+  headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+})
         .then((res) => {
-          console.log(res.data);
+          console.log(res.config.data);
           var string1 = JSON.stringify(res.data);
           let arr = JSON.parse(string1);
           console.log(arr);
@@ -210,6 +229,25 @@ export default {
           alert(e);
         });
     },
+    selectRow(item) {
+      this.selectedStaff = item;
+      this.code = item.staffID;
+      this.last_name = item.staffLastName;
+      this.first_name = item.staffFirstName;
+      this.last_name_kana = item.staffLastNameKana;
+      this.first_name_kana = item.staffFirstNameKana;
+      this.zipcode1 = String(item.zipCode).slice(0,3);
+      this.zipcode2 = String(item.zipCode).slice(3,7);
+      this.prefecture = item.prefecture;
+      this.city = item.city;
+      this.building = item.building;
+      var tel = item.tel.split('-');
+      this.tel1 = tel[0];
+      this.tel2 = tel[1];
+      this.tel3 = tel[2];
+      this.mail = item.mail;
+
+    }
   },
   computed: {
     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
@@ -242,7 +280,7 @@ export default {
       }
     },
     last_name(last_name) {
-      if (!last_name || this.first_name) {
+      if (!last_name || !this.first_name) {
         this.$set(this.errors, "name", "必須入力項目です。");
         this.nameFlg = false;
       } else if (last_name.length > 50) {
@@ -254,7 +292,7 @@ export default {
       }
     },
     first_name(first_name) {
-      if (!first_name || this.last_name) {
+      if (!first_name || !this.last_name) {
         this.$set(this.errors, "name", "必須入力項目です。");
         this.nameFlg = false;
       } else if (first_name.length > 50) {
@@ -450,6 +488,9 @@ export default {
 
 
 <style scoped>
+body {
+    margin: 0;
+}
 .container {
   width: 100%;
   margin: 50px auto;
@@ -458,7 +499,7 @@ export default {
 .item {
   display: inline-block;
   vertical-align: top;
-  margin: auto 20px;
+  margin: auto 50px;
 }
 /* .items2 {
    text-align: right; 
@@ -473,6 +514,12 @@ export default {
 .data td {
   padding: 10px;
   border-right: solid 1px;
+}
+.highlight {
+  background: rgb(230, 230, 230);
+}
+tr:hover{
+  cursor: pointer;
 }
 table.data {
   border: solid 1px;
@@ -509,6 +556,9 @@ table {
 label {
   display: inline-block;
   white-space: nowrap;
+}
+.inputdev {
+  width: 150px;
 }
 input {
   width: 300px;
