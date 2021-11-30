@@ -129,7 +129,7 @@
       </table>
     </form>
     <div class="register">
-      <button type="button" :disabled="isDisabled">送信</button>
+      <button type="button" :disabled="isDisabled" @click="post">送信</button>
     </div>
     </div>
   </div>
@@ -146,7 +146,7 @@ export default {
 //   },
 beforeCreate() {
     this.axios
-        .get("/api/UserListFunction")
+        .get("/api/UserListFunction/")
         .then((res) => {
           console.log(res.data);
           var string1 = JSON.stringify(res.data);
@@ -159,6 +159,7 @@ beforeCreate() {
         });
 
 },
+
   data() {
     return {
       company: "",
@@ -187,6 +188,44 @@ beforeCreate() {
     };
   },
   methods: {
+    post() {
+      var now = new Date();
+      this.axios
+        .post("/api/UserRegister/",{
+            companyName: this.company,
+            presidentName: this.president,
+            zipCode: this.zipcode1+this.zipcode2,
+            prefecture: this.prefecture,
+            city: this.city,
+            building: this.building,
+            tel: this.tel1+"-"+this.tel2+"-"+this.tel3,
+            fax: this.fax1+"-"+this.fax2+"-"+this.fax3,
+            mail: this.mail,
+            deleteDate: null,
+            lastUpdate: now,
+            lastAdd: now
+        }, {
+  headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+})
+        .then(() => {
+          this.axios
+            .get("/api/UserListFunction/")
+            .then((res) => {
+              console.log(res.data);
+              var string1 = JSON.stringify(res.data);
+              let arr = JSON.parse(string1);
+              console.log(arr);
+              this.items = arr;
+            })
+            .catch((e) => {
+              alert(e);
+            });
+        })
+        .catch((e) => {
+          alert(e);
+        });
+  
+    },
     selectRow(item) {
       this.selectedUser = item;
       this.company = item.companyName;
@@ -200,10 +239,12 @@ beforeCreate() {
       this.tel1 = tel[0];
       this.tel2 = tel[1];
       this.tel3 = tel[2];
-      var fax = item.fax.split('-');
-      this.fax1 = fax[0];
-      this.fax2 = fax[1];
-      this.fax3 = fax[2];
+      if(item.fax != null){
+        var fax = item.fax.split('-');
+        this.fax1 = fax[0];
+        this.fax2 = fax[1];
+        this.fax3 = fax[2];
+      }
       this.mail = item.mail;
 
     }
