@@ -192,20 +192,20 @@ beforeCreate() {
       var now = new Date();
       this.axios
         .post("/api/UserRegister/",{
-            companyName: this.company,
-            presidentName: this.president,
-            zipCode: this.zipcode1+this.zipcode2,
-            prefecture: this.prefecture,
-            city: this.city,
-            building: this.building,
-            tel: this.tel1+"-"+this.tel2+"-"+this.tel3,
-            fax: this.fax1+"-"+this.fax2+"-"+this.fax3,
-            mail: this.mail,
-            deleteDate: null,
-            lastUpdate: now,
-            lastAdd: now
+            CompanyName: this.company,
+            PresidentName: this.president,
+            ZipCode: this.zipcode1+this.zipcode2,
+            Prefecture: this.prefecture,
+            City: this.city,
+            Building: this.building,
+            Tel: this.tel1+"-"+this.tel2+"-"+this.tel3,
+            Fax: this.fax1+"-"+this.fax2+"-"+this.fax3,
+            Mail: this.mail,
+            DeleteDate: null,
+            LastUpdate: now,
+            LastAdd: now
         }, {
-  headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  headers: {"Content-Type": "application/x-www-form-urlencoded"}
 })
         .then(() => {
           this.axios
