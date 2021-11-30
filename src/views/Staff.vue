@@ -10,17 +10,22 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.staffID" @click="selectRow(item)"  :class="{'highlight': (item == selectedStaff)}">
-            <td class="row1" >{{ item.staffID }}</td>
-            <td class="row2" >
-              {{ item.staffLastName }}{{ item.staffFirstName }}
+          <tr
+            v-for="item in items"
+            :key="item.staffID"
+            @click="selectRow(item)"
+            :class="{ highlight: item == selectedStaff }"
+          >
+            <td class="row1">{{ item.staffID }}</td>
+            <td class="row2">
+              {{ item.staffLastName }} {{ item.staffFirstName }}
             </td>
           </tr>
         </tbody>
       </table>
-      </div>
-      <!-- <Table row1="社員コード" row2="社員名" :items= "staffs" ></Table> -->
-      <!-- <button @click="getIp" type="button">IPをGET!</button> -->
+    </div>
+    <!-- <Table row1="社員コード" row2="社員名" :items= "staffs" ></Table> -->
+    <!-- <button @click="getIp" type="button">IPをGET!</button> -->
     <div class="item">
       <form>
         <table class="form">
@@ -38,8 +43,12 @@
           <tr>
             <div>
               <th><label for="name">社員名</label></th>
-              <td><input class="inputdev" type="text" v-model="last_name" /></td>
-              <td><input class="inputdev" type="text" v-model="first_name" /></td>
+              <td>
+                <input class="inputdev" type="text" v-model="last_name" />
+              </td>
+              <td>
+                <input class="inputdev" type="text" v-model="first_name" />
+              </td>
               <td class="errMsg">
                 <span>{{ errors.name }}</span>
               </td>
@@ -50,8 +59,12 @@
           <tr>
             <div>
               <th><label for="namekana">社員名（カナ）</label></th>
-              <td><input class="inputdev" type="text" v-model="last_name_kana" /></td>
-              <td><input class="inputdev" type="text" v-model="first_name_kana" /></td>
+              <td>
+                <input class="inputdev" type="text" v-model="last_name_kana" />
+              </td>
+              <td>
+                <input class="inputdev" type="text" v-model="first_name_kana" />
+              </td>
               <td class="errMsg">
                 <span>{{ errors.namekana }}</span>
               </td>
@@ -149,20 +162,34 @@ export default {
   //     Table
   // },
   beforeCreate() {
-      this.axios
-        .get("/api/StaffListFunction")
-        .then((res) => {
-          console.log(res.data);
-          var string1 = JSON.stringify(res.data);
-          let arr = JSON.parse(string1);
-          console.log(arr);
-          this.items = arr;
-        })
-        .catch((e) => {
-          alert(e);
-        });
-
+    this.axios
+      .get("/api/StaffListFunction/")
+      .then((res) => {
+        console.log(res.data);
+        var string1 = JSON.stringify(res.data);
+        let arr = JSON.parse(string1);
+        console.log(arr);
+        this.items = arr;
+      })
+      .catch((e) => {
+        alert(e);
+      });
   },
+  // updated() {
+  //   this.axios
+  //       .get("/api/StaffListFunction/")
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         var string1 = JSON.stringify(res.data);
+  //         let arr = JSON.parse(string1);
+  //         console.log(arr);
+  //         this.items = arr;
+  //       })
+  //       .catch((e) => {
+  //         alert(e);
+  //       });
+
+  // },
   data() {
     return {
       code: "",
@@ -200,30 +227,41 @@ export default {
     post() {
       var now = new Date();
       this.axios
-        .post("/api/StaffListFunction/",{
+        .post(
+          "/api/StaffRegister/",
+          {
             staffID: this.code,
             staffLastName: this.last_name,
             staffFirstName: this.first_name,
             staffLastNameKana: this.last_name_kana,
             staffFirstNameKana: this.first_name_kana,
-            zipCode: this.zipcode1+this.zipcode2,
+            zipCode: this.zipcode1 + this.zipcode2,
             prefecture: this.prefecture,
             city: this.city,
             building: this.building,
-            tel: this.tel1+this.tel2+this.tel3,
+            tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
             mail: this.mail,
             deleteDate: null,
             lastUpdate: now,
-            lastAdd: now
-        }, {
-  headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-})
-        .then((res) => {
-          console.log(res.config.data);
-          var string1 = JSON.stringify(res.data);
-          let arr = JSON.parse(string1);
-          console.log(arr);
-          this.items = arr;
+            lastAdd: now,
+          },
+          {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          }
+        )
+        .then(() => {
+          this.axios
+            .get("/api/StaffListFunction/")
+            .then((res) => {
+              console.log(res.data);
+              var string1 = JSON.stringify(res.data);
+              let arr = JSON.parse(string1);
+              console.log(arr);
+              this.items = arr;
+            })
+            .catch((e) => {
+              alert(e);
+            });
         })
         .catch((e) => {
           alert(e);
@@ -236,18 +274,17 @@ export default {
       this.first_name = item.staffFirstName;
       this.last_name_kana = item.staffLastNameKana;
       this.first_name_kana = item.staffFirstNameKana;
-      this.zipcode1 = String(item.zipCode).slice(0,3);
-      this.zipcode2 = String(item.zipCode).slice(3,7);
+      this.zipcode1 = String(item.zipCode).slice(0, 3);
+      this.zipcode2 = String(item.zipCode).slice(3, 7);
       this.prefecture = item.prefecture;
       this.city = item.city;
       this.building = item.building;
-      var tel = item.tel.split('-');
+      var tel = item.tel.split("-");
       this.tel1 = tel[0];
       this.tel2 = tel[1];
       this.tel3 = tel[2];
       this.mail = item.mail;
-
-    }
+    },
   },
   computed: {
     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
@@ -489,7 +526,7 @@ export default {
 
 <style scoped>
 body {
-    margin: 0;
+  margin: 0;
 }
 .container {
   width: 100%;
@@ -518,7 +555,7 @@ body {
 .highlight {
   background: rgb(230, 230, 230);
 }
-tr:hover{
+tr:hover {
   cursor: pointer;
 }
 table.data {
