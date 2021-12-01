@@ -146,7 +146,10 @@
       </form>
 
       <div class="register">
-        <button type="button" :disabled="isDisabled" @click="post">送信</button>
+        <button type="button"  @click="clear">クリア</button>
+        <button type="button" :disabled="isDisabled" @click="post">新規追加</button>
+        <button type="button"  @click="put">更新</button>
+        <button type="button"  @click="del">削除</button>
       </div>
     </div>
   </div>
@@ -175,21 +178,7 @@ export default {
         alert(e);
       });
   },
-  // updated() {
-  //   this.axios
-  //       .get("/api/StaffListFunction/")
-  //       .then((res) => {
-  //         console.log(res.data);
-  //         var string1 = JSON.stringify(res.data);
-  //         let arr = JSON.parse(string1);
-  //         console.log(arr);
-  //         this.items = arr;
-  //       })
-  //       .catch((e) => {
-  //         alert(e);
-  //       });
 
-  // },
   data() {
     return {
       code: "",
@@ -216,6 +205,7 @@ export default {
       mailFlg: false,
       errors: {},
       selectedStaff: null,
+      renderComponent: true,
       // items: [
       //     { code: 100, last_name: "aaa" },
       //     { code: 200, last_name: "bbb" },
@@ -266,6 +256,128 @@ export default {
         .catch((e) => {
           alert(e);
         });
+    },
+    put() {
+      var now = new Date();
+      this.axios
+        .post(
+          "/api/StaffUpdate/",
+          {
+            StaffID: this.code,
+            StaffLastName: this.last_name,
+            StaffFirstName: this.first_name,
+            StaffLastNameKana: this.last_name_kana,
+            StaffFirstNameKana: this.first_name_kana,
+            ZipCode: this.zipcode1 + this.zipcode2,
+            Prefecture: this.prefecture,
+            City: this.city,
+            Building: this.building,
+            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+            Mail: this.mail,
+            DeleteDate: null,
+            LastUpdate: now,
+            LastAdd: null,
+          },
+          {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          }
+        )
+        .then(() => {
+          this.axios
+            .get("/api/StaffListFunction/")
+            .then((res) => {
+              console.log(res.data);
+              var string1 = JSON.stringify(res.data);
+              let arr = JSON.parse(string1);
+              console.log(arr);
+              this.items = arr;
+            })
+            .catch((e) => {
+              alert(e);
+            });
+        })
+        .catch((e) => {
+          alert(e);
+        });
+    },
+    del() {
+      var now = new Date();
+      this.axios
+        .post(
+          "/api/StaffDelete/",
+          {
+            StaffID: this.code,
+            StaffLastName: this.last_name,
+            StaffFirstName: this.first_name,
+            StaffLastNameKana: this.last_name_kana,
+            StaffFirstNameKana: this.first_name_kana,
+            ZipCode: this.zipcode1 + this.zipcode2,
+            Prefecture: this.prefecture,
+            City: this.city,
+            Building: this.building,
+            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+            Mail: this.mail,
+            DeleteDate: now,
+            LastUpdate: now,
+            LastAdd: now,
+          },
+          {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          }
+        )
+        .then(() => {
+          this.axios
+            .get("/api/StaffListFunction/")
+            .then((res) => {
+              console.log(res.data);
+              var string1 = JSON.stringify(res.data);
+              let arr = JSON.parse(string1);
+              console.log(arr);
+              this.items = arr;
+            })
+            .catch((e) => {
+              alert(e);
+            });
+        })
+        .catch((e) => {
+          alert(e);
+        });
+    },
+    clear() {
+      
+
+      this.renderComponent = false;
+      this.$nextTick(() => {
+
+        this.renderComponent = true;
+      });
+      
+
+      // location.reload();
+      // this.selectedStaff = null;
+      // this.code = "",
+      // this.last_name = "",
+      // this.first_name = "",
+      // this.last_name_kana = "",
+      // this.first_name_kana = "",
+      // this.zipcode1 = "",
+      // this.zipcode2 = "",
+      // this.prefecture = "",
+      // this.city = "",
+      // this.building = "",
+      // this.tel1 = "",
+      // this.tel2 = "",
+      // this.tel3 = "",
+      // this.mail = "",
+      // this.codeFlg = false,
+      // this.nameFlg = false,
+      // this.namekanaFlg = false,
+      // this.zipcodeFlg = false,
+      // this.prefectureFlg = false,
+      // this.cityFlg = false,
+      // this.telFlg = false,
+      // this.mailFlg = false,
+      // this.errors = {}
     },
     selectRow(item) {
       this.selectedStaff = item;
@@ -538,9 +650,7 @@ body {
   vertical-align: top;
   margin: auto 50px;
 }
-/* .items2 {
-   text-align: right; 
-} */
+
 .datatable {
   overflow-y: scroll;
 }
@@ -604,8 +714,9 @@ input {
   margin-bottom: 15px;
 }
 button {
-  width: 60px;
+  width: 100px;
   height: 40px;
+  margin: auto 15px;
 }
 .register {
   width: 100%;
@@ -625,17 +736,7 @@ span {
   text-align: left;
   margin: 0px;
 }
-/* .form td {
-    display: block;
-} */
-/* tr.form {
-   display: flex;
-   flex-direction: column; 
-} */
-/* .test {
-   display: flex;
-   flex-direction: column; 
-} */
+
 .numberInput {
   width: 100px;
 }
