@@ -131,7 +131,7 @@
     <div class="register">
       <!-- <button type="button"  @click="clear">クリア</button> -->
       <button type="button" :disabled="isDisabled" @click="post">新規追加</button>
-      <button type="button"  @click="put(this.item)">更新</button>
+      <button type="button"  @click="put">更新</button>
       <button type="button"  @click="del">削除</button>
     </div>
     </div>
