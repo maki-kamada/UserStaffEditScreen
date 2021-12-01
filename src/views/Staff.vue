@@ -346,14 +346,7 @@ export default {
     clear() {
       
 
-      this.renderComponent = false;
-      this.$nextTick(() => {
-
-        this.renderComponent = true;
-      });
-      
-
-      // location.reload();
+      location.reload();
       // this.selectedStaff = null;
       // this.code = "",
       // this.last_name = "",
@@ -369,14 +362,14 @@ export default {
       // this.tel2 = "",
       // this.tel3 = "",
       // this.mail = "",
-      // this.codeFlg = false,
-      // this.nameFlg = false,
-      // this.namekanaFlg = false,
-      // this.zipcodeFlg = false,
-      // this.prefectureFlg = false,
-      // this.cityFlg = false,
-      // this.telFlg = false,
-      // this.mailFlg = false,
+      // this.codeFlg = true,
+      // this.nameFlg = true,
+      // this.namekanaFlg = true,
+      // this.zipcodeFlg = true,
+      // this.prefectureFlg = true,
+      // this.cityFlg = true,
+      // this.telFlg = true,
+      // this.mailFlg = true,
       // this.errors = {}
     },
     selectRow(item) {
