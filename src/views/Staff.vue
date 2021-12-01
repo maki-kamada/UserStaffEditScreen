@@ -347,30 +347,7 @@ export default {
       
 
       location.reload();
-      // this.selectedStaff = null;
-      // this.code = "",
-      // this.last_name = "",
-      // this.first_name = "",
-      // this.last_name_kana = "",
-      // this.first_name_kana = "",
-      // this.zipcode1 = "",
-      // this.zipcode2 = "",
-      // this.prefecture = "",
-      // this.city = "",
-      // this.building = "",
-      // this.tel1 = "",
-      // this.tel2 = "",
-      // this.tel3 = "",
-      // this.mail = "",
-      // this.codeFlg = true,
-      // this.nameFlg = true,
-      // this.namekanaFlg = true,
-      // this.zipcodeFlg = true,
-      // this.prefectureFlg = true,
-      // this.cityFlg = true,
-      // this.telFlg = true,
-      // this.mailFlg = true,
-      // this.errors = {}
+
     },
     selectRow(item) {
       this.selectedStaff = item;

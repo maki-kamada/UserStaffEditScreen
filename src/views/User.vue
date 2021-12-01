@@ -235,7 +235,7 @@ beforeCreate() {
         .post(
           "/api/UserUpdate/",
           {
-            UserID: this.selectedUser.UserID,
+            UserID: this.selectedUser.userID,
             CompanyName: this.company,
             PresidentName: this.president,
             ZipCode: this.zipcode1+this.zipcode2,
@@ -277,7 +277,7 @@ beforeCreate() {
         .post(
           "/api/UserDelete/",
           {
-            UserID: this.selectedUser.UserID,
+            UserID: this.selectedUser.userID,
             CompanyName: this.company,
             PresidentName: this.president,
             ZipCode: this.zipcode1+this.zipcode2,
