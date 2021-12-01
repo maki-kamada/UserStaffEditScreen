@@ -146,10 +146,12 @@
       </form>
 
       <div class="register">
-        <button type="button"  @click="clear">クリア</button>
-        <button type="button" :disabled="isDisabled" @click="post">新規追加</button>
-        <button type="button"  @click="put">更新</button>
-        <button type="button"  @click="del">削除</button>
+        <button type="button" @click="clear">クリア</button>
+        <button type="button" :disabled="isDisabled" @click="post">
+          新規追加
+        </button>
+        <button type="button" @click="put">更新</button>
+        <button type="button" @click="del">削除</button>
       </div>
     </div>
   </div>
@@ -205,7 +207,7 @@ export default {
       mailFlg: false,
       errors: {},
       selectedStaff: null,
-      renderComponent: true,
+      clearFlg: false,
       // items: [
       //     { code: 100, last_name: "aaa" },
       //     { code: 200, last_name: "bbb" },
@@ -344,14 +346,31 @@ export default {
         });
     },
     clear() {
-      
-
-      location.reload();
-
+        this.code = "";
+        this.last_name = "";
+        this.first_name = "";
+        this.last_name_kana = "";
+        this.first_name_kana = "";
+        this.zipcode1 = "";
+        this.zipcode2 = "";
+        this.prefecture = "";
+        this.city = "";
+        this.building = "";
+        this.tel1 = "";
+        this.tel2 = "";
+        this.tel3 = "";
+        this.mail = "";
+        this.clearFlg = true;
+        this.selectedStaff = [];
+        this.errors = {};
+        this.$nextTick(() =>{
+          this.clearFlg = false
+        })
+      // location.reload();
     },
     selectRow(item) {
       this.selectedStaff = item;
-      this.code = item.staffID;
+      this.code = String(item.staffID);
       this.last_name = item.staffLastName;
       this.first_name = item.staffFirstName;
       this.last_name_kana = item.staffLastNameKana;
@@ -387,218 +406,256 @@ export default {
   watch: {
     // リアルタイムでバリデーションチェックを行う
     code(code) {
-      if (!code) {
-        this.$set(this.errors, "code", "必須入力項目です。");
-        this.codeFlg = false;
-      } else if (code.match(/^([1-9]\d*|0)$/)) {
-        this.$delete(this.errors, "code");
-        this.codeFlg = true;
-      } else {
-        this.$set(this.errors, "code", "半角数字で入力してください。");
-        this.codeFlg = false;
-      }
+      if (this.clearFlg == false) {
+        if (!code) {
+          this.$set(this.errors, "code", "必須入力項目です。");
+          this.codeFlg = false;
+        } else if (code.match(/^([1-9]\d*|0)$/)) {
+          this.$delete(this.errors, "code");
+          this.codeFlg = true;
+        } else {
+          this.$set(this.errors, "code", "半角数字で入力してください。");
+          this.codeFlg = false;
+        }
+      } 
     },
     last_name(last_name) {
-      if (!last_name || !this.first_name) {
-        this.$set(this.errors, "name", "必須入力項目です。");
-        this.nameFlg = false;
-      } else if (last_name.length > 50) {
-        this.$set(this.errors, "name", "50文字以内で入力してください。");
-        this.nameFlg = false;
-      } else {
-        this.$delete(this.errors, "name");
-        this.nameFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!last_name || !this.first_name) {
+          this.$set(this.errors, "name", "必須入力項目です。");
+          this.nameFlg = false;
+        } else if (last_name.length > 50) {
+          this.$set(this.errors, "name", "50文字以内で入力してください。");
+          this.nameFlg = false;
+        } else {
+          this.$delete(this.errors, "name");
+          this.nameFlg = true;
+        }
+      } 
     },
     first_name(first_name) {
-      if (!first_name || !this.last_name) {
-        this.$set(this.errors, "name", "必須入力項目です。");
-        this.nameFlg = false;
-      } else if (first_name.length > 50) {
-        this.$set(this.errors, "name", "50文字以内で入力してください。");
-        this.nameFlg = false;
-      } else {
-        this.$delete(this.errors, "name");
-        this.nameFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!first_name || !this.last_name) {
+          this.$set(this.errors, "name", "必須入力項目です。");
+          this.nameFlg = false;
+        } else if (first_name.length > 50) {
+          this.$set(this.errors, "name", "50文字以内で入力してください。");
+          this.nameFlg = false;
+        } else {
+          this.$delete(this.errors, "name");
+          this.nameFlg = true;
+        }
+      } 
     },
     last_name_kana(last_name_kana) {
-      if (!last_name_kana || !this.first_name_kana) {
-        this.$set(this.errors, "namekana", "必須入力項目です。");
-        this.namekanaFlg = false;
-      } else if (
-        !last_name_kana.match(/^[\u30a0-\u30ff]+$/) &&
-        !this.first_name_kana.match(/^[\u30a0-\u30ff]+$/)
-      ) {
-        this.$set(this.errors, "namekana", "カタカナで入力してください。");
-        this.namekanaFlg = false;
-      } else if (last_name_kana.length > 50) {
-        this.$set(this.errors, "namekana", "50文字以内で入力してください。");
-        this.namekanaFlg = false;
-      } else {
-        this.$delete(this.errors, "namekana");
-        this.namekanaFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!last_name_kana || !this.first_name_kana) {
+          this.$set(this.errors, "namekana", "必須入力項目です。");
+          this.namekanaFlg = false;
+        } else if (
+          !last_name_kana.match(/^[\u30a0-\u30ff]+$/) &&
+          !this.first_name_kana.match(/^[\u30a0-\u30ff]+$/)
+        ) {
+          this.$set(this.errors, "namekana", "カタカナで入力してください。");
+          this.namekanaFlg = false;
+        } else if (last_name_kana.length > 50) {
+          this.$set(this.errors, "namekana", "50文字以内で入力してください。");
+          this.namekanaFlg = false;
+        } else {
+          this.$delete(this.errors, "namekana");
+          this.namekanaFlg = true;
+        }
+      } 
     },
     first_name_kana(first_name_kana) {
-      if (!first_name_kana || !this.last_name_kana) {
-        this.$set(this.errors, "namekana", "必須入力項目です。");
-        this.namekanaFlg = false;
-      } else if (
-        !first_name_kana.match(/^[\u30a0-\u30ff]+$/) &&
-        !this.last_name_kana.match(/^[\u30a0-\u30ff]+$/)
-      ) {
-        this.$set(this.errors, "namekana", "カタカナで入力してください。");
-        this.namekanaFlg = false;
-      } else if (first_name_kana.length > 50) {
-        this.$set(this.errors, "namekana", "50文字以内で入力してください。");
-        this.namekanaFlg = false;
-      } else {
-        this.$delete(this.errors, "namekana");
-        this.namekanaFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!first_name_kana || !this.last_name_kana) {
+          this.$set(this.errors, "namekana", "必須入力項目です。");
+          this.namekanaFlg = false;
+        } else if (
+          !first_name_kana.match(/^[\u30a0-\u30ff]+$/) &&
+          !this.last_name_kana.match(/^[\u30a0-\u30ff]+$/)
+        ) {
+          this.$set(this.errors, "namekana", "カタカナで入力してください。");
+          this.namekanaFlg = false;
+        } else if (first_name_kana.length > 50) {
+          this.$set(this.errors, "namekana", "50文字以内で入力してください。");
+          this.namekanaFlg = false;
+        } else {
+          this.$delete(this.errors, "namekana");
+          this.namekanaFlg = true;
+        }
+      } 
     },
     zipcode1(zipcode1) {
-      if (!zipcode1 || !this.zipcode2) {
-        this.$set(this.errors, "zipcode", "必須入力項目です。");
-        this.zipcodeFlg = false;
-      } else if (zipcode1.match(/^\d{3}$/) && this.zipcode2.match(/^\d{4}$/)) {
-        this.$delete(this.errors, "zipcode");
-        this.zipcodeFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "zipcode",
-          "半角数字で入力してください。（3桁＋4桁）"
-        );
-        this.zipcodeFlg = false;
-      }
+      if (this.clearFlg == false) {
+        if (!zipcode1 || !this.zipcode2) {
+          this.$set(this.errors, "zipcode", "必須入力項目です。");
+          this.zipcodeFlg = false;
+        } else if (
+          zipcode1.match(/^\d{3}$/) &&
+          this.zipcode2.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "zipcode");
+          this.zipcodeFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "zipcode",
+            "半角数字で入力してください。（3桁＋4桁）"
+          );
+          this.zipcodeFlg = false;
+        }
+      } 
     },
     zipcode2(zipcode2) {
-      if (!this.zipcode1 || !zipcode2) {
-        this.$set(this.errors, "zipcode", "必須入力項目です。");
-        this.zipcodeFlg = false;
-      } else if (this.zipcode1.match(/^\d{3}$/) && zipcode2.match(/^\d{4}$/)) {
-        this.$delete(this.errors, "zipcode");
-        this.zipcodeFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "zipcode",
-          "半角数字で入力してください。（3桁＋4桁）"
-        );
-        this.zipcodeFlg = false;
-      }
+      if (this.clearFlg == false) {
+        if (!this.zipcode1 || !zipcode2) {
+          this.$set(this.errors, "zipcode", "必須入力項目です。");
+          this.zipcodeFlg = false;
+        } else if (
+          this.zipcode1.match(/^\d{3}$/) &&
+          zipcode2.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "zipcode");
+          this.zipcodeFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "zipcode",
+            "半角数字で入力してください。（3桁＋4桁）"
+          );
+          this.zipcodeFlg = false;
+        }
+      } 
     },
     prefecture(prefecture) {
-      if (!prefecture) {
-        this.$set(this.errors, "prefecture", "必須入力項目です。");
-        this.prefectureFlg = false;
-      } else if (prefecture.length > 50) {
-        this.$set(this.errors, "president", "50文字以内で入力してください。");
-        this.prefectureFlg = false;
-      } else {
-        this.$delete(this.errors, "prefecture");
-        this.prefectureFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!prefecture) {
+          this.$set(this.errors, "prefecture", "必須入力項目です。");
+          this.prefectureFlg = false;
+        } else if (prefecture.length > 50) {
+          this.$set(this.errors, "president", "50文字以内で入力してください。");
+          this.prefectureFlg = false;
+        } else {
+          this.$delete(this.errors, "prefecture");
+          this.prefectureFlg = true;
+        }
+      } 
     },
     city(city) {
-      if (!city) {
-        this.$set(this.errors, "city", "必須入力項目です。");
-        this.cityFlg = false;
-      } else if (city.length > 50) {
-        this.$set(this.errors, "city", "50文字以内で入力してください。");
-        this.cityFlg = false;
-      } else {
-        this.$delete(this.errors, "city");
-        this.cityFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!city) {
+          this.$set(this.errors, "city", "必須入力項目です。");
+          this.cityFlg = false;
+        } else if (city.length > 50) {
+          this.$set(this.errors, "city", "50文字以内で入力してください。");
+          this.cityFlg = false;
+        } else {
+          this.$delete(this.errors, "city");
+          this.cityFlg = true;
+        }
+      } 
     },
     building(building) {
-      if (building.length > 50) {
-        this.$set(this.errors, "building", "50文字以内で入力してください。");
-      } else {
-        this.$delete(this.errors, "building");
-      }
+      if (this.clearFlg == false) {
+        if (building.length > 50) {
+          this.$set(this.errors, "building", "50文字以内で入力してください。");
+        } else {
+          this.$delete(this.errors, "building");
+        }
+      } 
     },
     tel1(tel1) {
-      if (!tel1 || !this.tel2 || !this.tel3) {
-        this.$set(this.errors, "tel", "必須入力項目です。");
-        this.telFlg = false;
-      } else if (
-        tel1.match(/^\d{2,3}$/) &&
-        this.tel2.match(/^\d{1,4}$/) &&
-        this.tel3.match(/^\d{4}$/)
-      ) {
-        this.$delete(this.errors, "tel");
-        this.telFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "tel",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-        this.telFlg = false;
-      }
+      if (this.clearFlg == false) {
+        if (!tel1 || !this.tel2 || !this.tel3) {
+          this.$set(this.errors, "tel", "必須入力項目です。");
+          this.telFlg = false;
+        } else if (
+          tel1.match(/^\d{2,3}$/) &&
+          this.tel2.match(/^\d{1,4}$/) &&
+          this.tel3.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "tel");
+          this.telFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "tel",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+          this.telFlg = false;
+        }
+      } 
     },
     tel2(tel2) {
-      if (!this.tel1 || !tel2 || !this.tel3) {
-        this.$set(this.errors, "tel", "必須入力項目です。");
-        this.telFlg = false;
-      } else if (
-        this.tel1.match(/^\d{2,3}$/) &&
-        tel2.match(/^\d{1,4}$/) &&
-        this.tel3.match(/^\d{4}$/)
-      ) {
-        this.$delete(this.errors, "tel");
-        this.telFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "tel",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-        this.telFlg = false;
-      }
+      if (this.clearFlg == false) {
+        if (!this.tel1 || !tel2 || !this.tel3) {
+          this.$set(this.errors, "tel", "必須入力項目です。");
+          this.telFlg = false;
+        } else if (
+          this.tel1.match(/^\d{2,3}$/) &&
+          tel2.match(/^\d{1,4}$/) &&
+          this.tel3.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "tel");
+          this.telFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "tel",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+          this.telFlg = false;
+        }
+      } 
     },
     tel3(tel3) {
-      if (!this.tel1 || !this.tel2 || !tel3) {
-        this.$set(this.errors, "tel", "必須入力項目です。");
-        this.telFlg = false;
-      } else if (
-        this.tel1.match(/^\d{2,3}$/) &&
-        this.tel2.match(/^\d{1,4}$/) &&
-        tel3.match(/^\d{4}$/)
-      ) {
-        this.$delete(this.errors, "tel");
-        this.telFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "tel",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-        this.telFlg = false;
-      }
+      if (this.clearFlg == false) {
+        if (!this.tel1 || !this.tel2 || !tel3) {
+          this.$set(this.errors, "tel", "必須入力項目です。");
+          this.telFlg = false;
+        } else if (
+          this.tel1.match(/^\d{2,3}$/) &&
+          this.tel2.match(/^\d{1,4}$/) &&
+          tel3.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "tel");
+          this.telFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "tel",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+          this.telFlg = false;
+        }
+      } 
     },
     mail(mail) {
-      if (!mail) {
-        this.$set(this.errors, "mail", "必須入力項目です。");
-        this.mailFlg = false;
-      } else if (
-        !mail.match(
-          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        )
-      ) {
-        this.$set(this.errors, "mail", "正しいメール形式で入力してください。");
-        this.mailFlg = false;
-      } else if (mail.length > 40) {
-        this.$set(this.errors, "mail", "40文字以内で入力してください。");
-        this.mailFlg = false;
-      } else {
-        this.$delete(this.errors, "mail");
-        this.mailFlg = true;
-      }
+      if (this.clearFlg == false) {
+        if (!mail) {
+          this.$set(this.errors, "mail", "必須入力項目です。");
+          this.mailFlg = false;
+        } else if (
+          !mail.match(
+            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+          )
+        ) {
+          this.$set(
+            this.errors,
+            "mail",
+            "正しいメール形式で入力してください。"
+          );
+          this.mailFlg = false;
+        } else if (mail.length > 40) {
+          this.$set(this.errors, "mail", "40文字以内で入力してください。");
+          this.mailFlg = false;
+        } else {
+          this.$delete(this.errors, "mail");
+          this.mailFlg = true;
+        }
+      } 
     },
   },
 };
@@ -641,7 +698,7 @@ tr:hover {
 table.data {
   border: solid 1px;
   border-collapse: collapse;
-  width: 600px;
+  width: 500px;
   height: 50px;
 }
 .row1 {
@@ -665,11 +722,11 @@ table.data {
   height: 100%;
   border: 1px solid #ccc;
 }
-
+/* 
 table {
   margin-left: auto;
   margin-right: auto;
-}
+} */
 label {
   display: inline-block;
   white-space: nowrap;

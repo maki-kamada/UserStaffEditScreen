@@ -129,7 +129,7 @@
       </table>
     </form>
     <div class="register">
-      <!-- <button type="button"  @click="clear">クリア</button> -->
+      <button type="button"  @click="clear">クリア</button>
       <button type="button" :disabled="isDisabled" @click="post">新規追加</button>
       <button type="button"  @click="put">更新</button>
       <button type="button"  @click="del">削除</button>
@@ -187,6 +187,7 @@ beforeCreate() {
       mailFlg: false,
       errors: {},
       selectedUser: null,
+      clearFlg: false,
       items: [],
     };
   },
@@ -313,6 +314,29 @@ beforeCreate() {
           alert(e);
         });
     },
+    clear() {
+      this.company = "";
+      this.president = "";
+      this.zipcode1 = "";
+      this.zipcode2 = "";
+      this.prefecture = "";
+      this.city = "";
+      this.building = "";
+      this.tel1 = "";
+      this.tel2 = "";
+      this.tel3 = "";
+      this.fax1 = "";
+      this.fax2 = "";
+      this.fax3 = "";
+      this.mail = "";
+      this.clearFlg = true;
+        this.selectedUser = [];
+        this.errors = {};
+        this.$nextTick(() =>{
+          this.clearFlg = false
+        })
+
+    },
     selectRow(item) {
       this.selectedUser = item;
       this.company = item.companyName;
@@ -355,6 +379,7 @@ beforeCreate() {
   watch: {
     // リアルタイムでバリデーションチェックを行う
     company(company) {
+      if (this.clearFlg == false) {
       if (!company) {
         this.$set(this.errors, "company", "必須入力項目です。");
         this.companyFlg = false;
@@ -365,15 +390,19 @@ beforeCreate() {
         this.$delete(this.errors, "company");
         this.companyFlg = true;
       }
+      }
     },
     president(president) {
+      if (this.clearFlg == false) {
       if (president.length > 50) {
         this.$set(this.errors, "president", "50文字以内で入力してください。");
       } else {
         this.$delete(this.errors, "president");
       }
+      }
     },
     zipcode1(zipcode1) {
+      if (this.clearFlg == false) {
       if (!zipcode1 || !this.zipcode2) {
         this.$set(this.errors, "zipcode", "必須入力項目です。");
         this.zipcodeFlg = false;
@@ -388,8 +417,10 @@ beforeCreate() {
         );
         this.zipcodeFlg = false;
       }
+      }
     },
     zipcode2(zipcode2) {
+      if (this.clearFlg == false) {
       if (!this.zipcode1 || !zipcode2) {
         this.$set(this.errors, "zipcode", "必須入力項目です。");
         this.zipcodeFlg = false;
@@ -404,8 +435,10 @@ beforeCreate() {
         );
         this.zipcodeFlg = false;
       }
+      }
     },
     prefecture(prefecture) {
+      if (this.clearFlg == false) {
       if (!prefecture) {
         this.$set(this.errors, "prefecture", "必須入力項目です。");
         this.prefectureFlg = false;
@@ -416,8 +449,10 @@ beforeCreate() {
         this.$delete(this.errors, "prefecture");
         this.prefectureFlg = true;
       }
+      }
     },
     city(city) {
+      if (this.clearFlg == false) {
       if (!city) {
         this.$set(this.errors, "city", "必須入力項目です。");
         this.cityFlg = false;
@@ -428,15 +463,19 @@ beforeCreate() {
         this.$delete(this.errors, "city");
         this.cityFlg = true;
       }
+      }
     },
     building(building) {
+      if (this.clearFlg == false) {
       if (building.length > 50) {
         this.$set(this.errors, "building", "50文字以内で入力してください。");
       } else {
         this.$delete(this.errors, "building");
       }
+      }
     },
     tel1(tel1) {
+      if (this.clearFlg == false) {
       if (!tel1 || !this.tel2 || !this.tel3) {
         this.$set(this.errors, "tel", "必須入力項目です。");
         this.telFlg = false;
@@ -455,8 +494,10 @@ beforeCreate() {
         );
         this.telFlg = false;
       }
+      }
     },
     tel2(tel2) {
+      if (this.clearFlg == false) {
       if (!this.tel1 || !tel2 || !this.tel3) {
         this.$set(this.errors, "tel", "必須入力項目です。");
         this.telFlg = false;
@@ -475,8 +516,10 @@ beforeCreate() {
         );
         this.telFlg = false;
       }
+      }
     },
     tel3(tel3) {
+      if (this.clearFlg == false) {
       if (!this.tel1 || !this.tel2 || !tel3) {
         this.$set(this.errors, "tel", "必須入力項目です。");
         this.telFlg = false;
@@ -495,8 +538,10 @@ beforeCreate() {
         );
         this.telFlg = false;
       }
+      }
     },
     fax1(fax1) {
+      if (this.clearFlg == false) {
       if (fax1 == "" && this.fax2 == "" && this.fax3 == "") {
         this.$delete(this.errors, "fax");
       } else if (
@@ -512,8 +557,10 @@ beforeCreate() {
       } else {
         this.$delete(this.errors, "fax");
       }
+      }
     },
     fax2(fax2) {
+      if (this.clearFlg == false) {
       if (this.fax1 == "" && fax2 == "" && this.fax3 == "") {
         this.$delete(this.errors, "fax");
       } else if (
@@ -529,8 +576,10 @@ beforeCreate() {
       } else {
         this.$delete(this.errors, "fax");
       }
+      }
     },
     fax3(fax3) {
+      if (this.clearFlg == false) {
       if (this.fax1 == "" && this.fax2 == "" && fax3 == "") {
         this.$delete(this.errors, "fax");
       } else if (
@@ -546,8 +595,10 @@ beforeCreate() {
       } else {
         this.$delete(this.errors, "fax");
       }
+      }
     },
     mail(mail) {
+      if (this.clearFlg == false) {
       if (!mail) {
         this.$set(this.errors, "mail", "必須入力項目です。");
         this.mailFlg = false;
@@ -564,6 +615,7 @@ beforeCreate() {
       } else {
         this.$delete(this.errors, "mail");
         this.mailFlg = true;
+      }
       }
     },
   },
