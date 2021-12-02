@@ -82,6 +82,9 @@
               <td>
                 <input class="numberInput" type="text" v-model="zipcode2" />
               </td>
+              <td>
+                <button type="button" @click="zipcodeSearch">住所検索</button>
+              </td>
               <td class="errMsg">
                 <span>{{ errors.zipcode }}</span>
               </td>
@@ -219,6 +222,14 @@ export default {
     };
   },
   methods: {
+    zipcodeSearch() {
+      this.axios
+      .get("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + this.zipcode1 + this.zipcode2)
+      .then(res => {
+        this.prefecture = res.data.results[0].address1
+        this.city = res.data.results[0].address2 + res.data.results[0].address3
+      })
+    },
     post() {
       if(confirm("本当に新規追加しますか？")){
       var now = new Date();

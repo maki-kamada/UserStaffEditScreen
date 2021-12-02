@@ -53,6 +53,9 @@
               <td>
                 <input class="numberInput" type="text" v-model="zipcode2" />
               </td>
+              <td>
+                <button type="button" @click="zipcodeSearch">住所検索</button>
+              </td>
               <td class="errMsg">
                 <span>{{ errors.zipcode }}</span>
               </td>
@@ -131,8 +134,8 @@
     <div class="register">
       <button type="button"  @click="clear">クリア</button>
       <button type="button" :disabled="isDisabled" @click="post">新規追加</button>
-      <button type="button" :disabled="editDisabled" @click="put">更新</button>
-      <button type="button" :disabled="editDisabled" @click="del">削除</button>
+      <button type="button"  @click="put">更新</button>
+      <button type="button"  @click="del">削除</button>
     </div>
     </div>
   </div>
@@ -192,8 +195,15 @@ beforeCreate() {
     };
   },
   methods: {
+    zipcodeSearch() {
+      this.axios
+      .get("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + this.zipcode1 + this.zipcode2)
+      .then(res => {
+        this.prefecture = res.data.results[0].address1
+        this.city = res.data.results[0].address2 + res.data.results[0].address3
+      })
+    },
     post() {
-      if(confirm("本当に新規追加しますか？")){
       var now = new Date();
       this.axios
         .post("/api/UserRegister/",{
@@ -221,7 +231,6 @@ beforeCreate() {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
-              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -230,12 +239,9 @@ beforeCreate() {
         .catch((e) => {
           alert(e);
         });
-
-      }
   
     },
     put() {
-      if(confirm("本当に更新しますか？")){
       var now = new Date();
       this.axios
         .post(
@@ -268,7 +274,6 @@ beforeCreate() {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
-              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -277,10 +282,8 @@ beforeCreate() {
         .catch((e) => {
           alert(e);
         });
-      }
     },
     del() {
-      if(confirm("本当に削除しますか？")){
       var now = new Date();
       this.axios
         .post(
@@ -313,7 +316,6 @@ beforeCreate() {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
-              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -322,7 +324,6 @@ beforeCreate() {
         .catch((e) => {
           alert(e);
         });
-      }
     },
     clear() {
       this.company = "";
@@ -339,14 +340,8 @@ beforeCreate() {
       this.fax2 = "";
       this.fax3 = "";
       this.mail = "";
-      this.companyFlg = false;
-      this.zipcodeFlg = false;
-      this.prefectureFlg = false;
-      this.cityFlg = false;
-      this.telFlg = false;
-      this.mailFlg = false;
       this.clearFlg = true;
-        this.selectedUser = null;
+        this.selectedUser = [];
         this.errors = {};
         this.$nextTick(() =>{
           this.clearFlg = false
@@ -387,23 +382,10 @@ beforeCreate() {
         this.cityFlg == true &&
         this.telFlg == true &&
         this.mailFlg == true &&
-        this.selectedUser == null &&
         Object.keys(this.errors).length == 0
         ? false
         : true;
     },
-    editDisabled() {
-       return this.companyFlg == true &&
-        this.zipcodeFlg == true &&
-        this.prefectureFlg == true &&
-        this.cityFlg == true &&
-        this.telFlg == true &&
-        this.mailFlg == true &&
-        this.selectedUser != null &&
-        Object.keys(this.errors).length == 0
-        ? false
-        : true;
-    }
   },
   watch: {
     // リアルタイムでバリデーションチェックを行う
