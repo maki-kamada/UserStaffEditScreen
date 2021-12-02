@@ -175,6 +175,9 @@ export default {
         let arr = JSON.parse(string1);
         console.log(arr);
         this.items = arr;
+        this.items.sort((a, b) => {
+          return a.staffID - b.staffID;
+        });
       })
       .catch((e) => {
         alert(e);
@@ -217,6 +220,7 @@ export default {
   },
   methods: {
     post() {
+      if(confirm("本当に新規追加しますか？")){
       var now = new Date();
       this.axios
         .post(
@@ -250,6 +254,10 @@ export default {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
+              this.items.sort((a, b) => {
+                return a.staffID - b.staffID;
+              });
+              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -258,8 +266,10 @@ export default {
         .catch((e) => {
           alert(e);
         });
+      }
     },
     put() {
+      if(confirm("本当に更新しますか？")){
       var now = new Date();
       this.axios
         .post(
@@ -294,6 +304,10 @@ export default {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
+              this.items.sort((a, b) => {
+                return a.staffID - b.staffID;
+              });
+              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -302,8 +316,10 @@ export default {
         .catch((e) => {
           alert(e);
         });
+      }
     },
     del() {
+      if(confirm("本当に削除しますか？")){
       var now = new Date();
       this.axios
         .post(
@@ -338,6 +354,10 @@ export default {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
+              this.items.sort((a, b) => {
+                return a.staffID - b.staffID;
+              });
+              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -346,6 +366,7 @@ export default {
         .catch((e) => {
           alert(e);
         });
+      }
     },
     clear() {
         this.code = "";
@@ -362,9 +383,17 @@ export default {
         this.tel2 = "";
         this.tel3 = "";
         this.mail = "";
+        this.codeFlg = false;
+        this.nameFlg = false;
+        this.namekanaFlg = false;
+        this.zipcodeFlg = false;
+        this.prefectureFlg = false;
+        this.cityFlg = false;
+        this.telFlg = false;
+        this.mailFlg = false;
         this.clearFlg = true;
         this.selectedStaff = null;
-        Object.keys(this.errors).length = 0;
+        this.disabledFlg = false;
         this.errors = {};
         this.$nextTick(() =>{
           this.clearFlg = false;
@@ -415,18 +444,12 @@ export default {
         this.cityFlg == true &&
         this.telFlg == true &&
         this.mailFlg == true &&
-        this.selectedStaff != [] &&
+        this.selectedStaff != null &&
         Object.keys(this.errors).length == 0
         ? false
         : true;
-
     },
-    testDisabled() {
-      return this.selectedStaff != null
-        ? false
-        : true;
 
-    }
   },
   watch: {
     // リアルタイムでバリデーションチェックを行う
@@ -659,6 +682,7 @@ export default {
     },
     mail(mail) {
       if (this.clearFlg == false) {
+ 
         if (!mail) {
           this.$set(this.errors, "mail", "必須入力項目です。");
           this.mailFlg = false;
