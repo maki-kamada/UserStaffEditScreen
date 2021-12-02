@@ -406,14 +406,14 @@ beforeCreate() {
       if (!zipcode1 || !this.zipcode2) {
         this.$set(this.errors, "zipcode", "必須入力項目です。");
         this.zipcodeFlg = false;
-      } else if (zipcode1.match(/^\d{3}$/) && this.zipcode2.match(/^\d{4}$/)) {
+      } else if (zipcode1.match(/^[1-9]{1}[0-9]{2}$/) && this.zipcode2.match(/^\d{4}$/)) {
         this.$delete(this.errors, "zipcode");
         this.zipcodeFlg = true;
       } else {
         this.$set(
           this.errors,
           "zipcode",
-          "半角数字で入力してください。（3桁＋4桁）"
+          "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
         );
         this.zipcodeFlg = false;
       }
@@ -424,14 +424,14 @@ beforeCreate() {
       if (!this.zipcode1 || !zipcode2) {
         this.$set(this.errors, "zipcode", "必須入力項目です。");
         this.zipcodeFlg = false;
-      } else if (this.zipcode1.match(/^\d{3}$/) && zipcode2.match(/^\d{4}$/)) {
+      } else if (this.zipcode1.match(/^[1-9]{1}[0-9]{2}$/) && zipcode2.match(/^\d{4}$/)) {
         this.$delete(this.errors, "zipcode");
         this.zipcodeFlg = true;
       } else {
         this.$set(
           this.errors,
           "zipcode",
-          "半角数字で入力してください。（3桁＋4桁）"
+          "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
         );
         this.zipcodeFlg = false;
       }

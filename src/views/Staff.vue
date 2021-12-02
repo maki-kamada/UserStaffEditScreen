@@ -150,8 +150,8 @@
         <button type="button" :disabled="isDisabled" @click="post">
           新規追加
         </button>
-        <button type="button" @click="put">更新</button>
-        <button type="button" @click="del">削除</button>
+        <button type="button" :disabled="editDisabled" @click="put">更新</button>
+        <button type="button" :disabled="editDisabled" @click="del">削除</button>
       </div>
     </div>
   </div>
@@ -265,6 +265,7 @@ export default {
         .post(
           "/api/StaffUpdate/",
           {
+            ID: this.selectedStaff.iD,
             StaffID: this.code,
             StaffLastName: this.last_name,
             StaffFirstName: this.first_name,
@@ -308,6 +309,7 @@ export default {
         .post(
           "/api/StaffDelete/",
           {
+            ID: this.selectedStaff.iD,
             StaffID: this.code,
             StaffLastName: this.last_name,
             StaffFirstName: this.first_name,
@@ -361,10 +363,11 @@ export default {
         this.tel3 = "";
         this.mail = "";
         this.clearFlg = true;
-        this.selectedStaff = [];
+        this.selectedStaff = null;
+        Object.keys(this.errors).length = 0;
         this.errors = {};
         this.$nextTick(() =>{
-          this.clearFlg = false
+          this.clearFlg = false;
         })
       // location.reload();
     },
@@ -398,10 +401,32 @@ export default {
         this.cityFlg == true &&
         this.telFlg == true &&
         this.mailFlg == true &&
+        this.selectedStaff == null &&
         Object.keys(this.errors).length == 0
         ? false
         : true;
     },
+    editDisabled() {
+      return this.codeFlg == true &&
+        this.nameFlg == true &&
+        this.namekanaFlg == true &&
+        this.zipcodeFlg == true &&
+        this.prefectureFlg == true &&
+        this.cityFlg == true &&
+        this.telFlg == true &&
+        this.mailFlg == true &&
+        this.selectedStaff != [] &&
+        Object.keys(this.errors).length == 0
+        ? false
+        : true;
+
+    },
+    testDisabled() {
+      return this.selectedStaff != null
+        ? false
+        : true;
+
+    }
   },
   watch: {
     // リアルタイムでバリデーションチェックを行う
@@ -493,7 +518,7 @@ export default {
           this.$set(this.errors, "zipcode", "必須入力項目です。");
           this.zipcodeFlg = false;
         } else if (
-          zipcode1.match(/^\d{3}$/) &&
+          zipcode1.match(/^[1-9]{1}[0-9]{2}$/) &&
           this.zipcode2.match(/^\d{4}$/)
         ) {
           this.$delete(this.errors, "zipcode");
@@ -502,7 +527,7 @@ export default {
           this.$set(
             this.errors,
             "zipcode",
-            "半角数字で入力してください。（3桁＋4桁）"
+            "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
           );
           this.zipcodeFlg = false;
         }
@@ -514,7 +539,7 @@ export default {
           this.$set(this.errors, "zipcode", "必須入力項目です。");
           this.zipcodeFlg = false;
         } else if (
-          this.zipcode1.match(/^\d{3}$/) &&
+          this.zipcode1.match(/^[1-9]{1}[0-9]{2}$/) &&
           zipcode2.match(/^\d{4}$/)
         ) {
           this.$delete(this.errors, "zipcode");
@@ -523,7 +548,7 @@ export default {
           this.$set(
             this.errors,
             "zipcode",
-            "半角数字で入力してください。（3桁＋4桁）"
+            "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
           );
           this.zipcodeFlg = false;
         }
