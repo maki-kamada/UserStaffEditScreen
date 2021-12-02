@@ -82,9 +82,9 @@
               <td>
                 <input class="numberInput" type="text" v-model="zipcode2" />
               </td>
-              <td>
+              <!-- <td>
                 <button type="button" @click="zipcodeSearch">住所検索</button>
-              </td>
+              </td> -->
               <td class="errMsg">
                 <span>{{ errors.zipcode }}</span>
               </td>
@@ -153,8 +153,12 @@
         <button type="button" :disabled="isDisabled" @click="post">
           新規追加
         </button>
-        <button type="button" :disabled="editDisabled" @click="put">更新</button>
-        <button type="button" :disabled="editDisabled" @click="del">削除</button>
+        <button type="button" :disabled="editDisabled" @click="put">
+          更新
+        </button>
+        <button type="button" :disabled="editDisabled" @click="del">
+          削除
+        </button>
       </div>
     </div>
   </div>
@@ -222,193 +226,197 @@ export default {
     };
   },
   methods: {
-    zipcodeSearch() {
-      this.axios
-      .get("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + this.zipcode1 + this.zipcode2)
-      .then(res => {
-        this.prefecture = res.data.results[0].address1
-        this.city = res.data.results[0].address2 + res.data.results[0].address3
-      })
-    },
+    // zipcodeSearch() {
+    //   this.axios
+    //     .get(
+    //       "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+    //         this.zipcode1 +
+    //         this.zipcode2
+    //     )
+    //     .then((res) => {
+    //       this.prefecture = res.data.results[0].address1;
+    //       this.city =
+    //         res.data.results[0].address2 + res.data.results[0].address3;
+    //     });
+    // },
     post() {
-      if(confirm("本当に新規追加しますか？")){
-      var now = new Date();
-      this.axios
-        .post(
-          "/api/StaffRegister/",
-          {
-            StaffID: this.code,
-            StaffLastName: this.last_name,
-            StaffFirstName: this.first_name,
-            StaffLastNameKana: this.last_name_kana,
-            StaffFirstNameKana: this.first_name_kana,
-            ZipCode: this.zipcode1 + this.zipcode2,
-            Prefecture: this.prefecture,
-            City: this.city,
-            Building: this.building,
-            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
-            Mail: this.mail,
-            DeleteDate: null,
-            LastUpdate: now,
-            LastAdd: now,
-          },
-          {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          }
-        )
-        .then(() => {
-          this.axios
-            .get("/api/StaffListFunction/")
-            .then((res) => {
-              console.log(res.data);
-              var string1 = JSON.stringify(res.data);
-              let arr = JSON.parse(string1);
-              console.log(arr);
-              this.items = arr;
-              this.items.sort((a, b) => {
-                return a.staffID - b.staffID;
+      if (confirm("本当に新規追加しますか？")) {
+        var now = new Date();
+        this.axios
+          .post(
+            "/api/StaffRegister/",
+            {
+              StaffID: this.code,
+              StaffLastName: this.last_name,
+              StaffFirstName: this.first_name,
+              StaffLastNameKana: this.last_name_kana,
+              StaffFirstNameKana: this.first_name_kana,
+              ZipCode: this.zipcode1 + this.zipcode2,
+              Prefecture: this.prefecture,
+              City: this.city,
+              Building: this.building,
+              Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+              Mail: this.mail,
+              DeleteDate: null,
+              LastUpdate: now,
+              LastAdd: now,
+            },
+            {
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            }
+          )
+          .then(() => {
+            this.axios
+              .get("/api/StaffListFunction/")
+              .then((res) => {
+                console.log(res.data);
+                var string1 = JSON.stringify(res.data);
+                let arr = JSON.parse(string1);
+                console.log(arr);
+                this.items = arr;
+                this.items.sort((a, b) => {
+                  return a.staffID - b.staffID;
+                });
+                this.clear();
+              })
+              .catch((e) => {
+                alert(e);
               });
-              this.clear();
-            })
-            .catch((e) => {
-              alert(e);
-            });
-        })
-        .catch((e) => {
-          alert(e);
-        });
+          })
+          .catch((e) => {
+            alert(e);
+          });
       }
     },
     put() {
-      if(confirm("本当に更新しますか？")){
-      var now = new Date();
-      this.axios
-        .post(
-          "/api/StaffUpdate/",
-          {
-            ID: this.selectedStaff.id,
-            StaffID: this.code,
-            StaffLastName: this.last_name,
-            StaffFirstName: this.first_name,
-            StaffLastNameKana: this.last_name_kana,
-            StaffFirstNameKana: this.first_name_kana,
-            ZipCode: this.zipcode1 + this.zipcode2,
-            Prefecture: this.prefecture,
-            City: this.city,
-            Building: this.building,
-            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
-            Mail: this.mail,
-            DeleteDate: null,
-            LastUpdate: now,
-            LastAdd: null,
-          },
-          {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          }
-        )
-        .then(() => {
-          this.axios
-            .get("/api/StaffListFunction/")
-            .then((res) => {
-              console.log(res.data);
-              var string1 = JSON.stringify(res.data);
-              let arr = JSON.parse(string1);
-              console.log(arr);
-              this.items = arr;
-              this.items.sort((a, b) => {
-                return a.staffID - b.staffID;
+      if (confirm("本当に更新しますか？")) {
+        var now = new Date();
+        this.axios
+          .post(
+            "/api/StaffUpdate/",
+            {
+              ID: this.selectedStaff.id,
+              StaffID: this.code,
+              StaffLastName: this.last_name,
+              StaffFirstName: this.first_name,
+              StaffLastNameKana: this.last_name_kana,
+              StaffFirstNameKana: this.first_name_kana,
+              ZipCode: this.zipcode1 + this.zipcode2,
+              Prefecture: this.prefecture,
+              City: this.city,
+              Building: this.building,
+              Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+              Mail: this.mail,
+              DeleteDate: null,
+              LastUpdate: now,
+              LastAdd: null,
+            },
+            {
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            }
+          )
+          .then(() => {
+            this.axios
+              .get("/api/StaffListFunction/")
+              .then((res) => {
+                console.log(res.data);
+                var string1 = JSON.stringify(res.data);
+                let arr = JSON.parse(string1);
+                console.log(arr);
+                this.items = arr;
+                this.items.sort((a, b) => {
+                  return a.staffID - b.staffID;
+                });
+                this.clear();
+              })
+              .catch((e) => {
+                alert(e);
               });
-              this.clear();
-            })
-            .catch((e) => {
-              alert(e);
-            });
-        })
-        .catch((e) => {
-          alert(e);
-        });
+          })
+          .catch((e) => {
+            alert(e);
+          });
       }
     },
     del() {
-      if(confirm("本当に削除しますか？")){
-      var now = new Date();
-      this.axios
-        .post(
-          "/api/StaffDelete/",
-          {
-            ID: this.selectedStaff.id,
-            StaffID: this.code,
-            StaffLastName: this.last_name,
-            StaffFirstName: this.first_name,
-            StaffLastNameKana: this.last_name_kana,
-            StaffFirstNameKana: this.first_name_kana,
-            ZipCode: this.zipcode1 + this.zipcode2,
-            Prefecture: this.prefecture,
-            City: this.city,
-            Building: this.building,
-            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
-            Mail: this.mail,
-            DeleteDate: now,
-            LastUpdate: now,
-            LastAdd: now,
-          },
-          {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          }
-        )
-        .then(() => {
-          this.axios
-            .get("/api/StaffListFunction/")
-            .then((res) => {
-              console.log(res.data);
-              var string1 = JSON.stringify(res.data);
-              let arr = JSON.parse(string1);
-              console.log(arr);
-              this.items = arr;
-              this.items.sort((a, b) => {
-                return a.staffID - b.staffID;
+      if (confirm("本当に削除しますか？")) {
+        var now = new Date();
+        this.axios
+          .post(
+            "/api/StaffDelete/",
+            {
+              ID: this.selectedStaff.id,
+              StaffID: this.code,
+              StaffLastName: this.last_name,
+              StaffFirstName: this.first_name,
+              StaffLastNameKana: this.last_name_kana,
+              StaffFirstNameKana: this.first_name_kana,
+              ZipCode: this.zipcode1 + this.zipcode2,
+              Prefecture: this.prefecture,
+              City: this.city,
+              Building: this.building,
+              Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+              Mail: this.mail,
+              DeleteDate: now,
+              LastUpdate: now,
+              LastAdd: now,
+            },
+            {
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            }
+          )
+          .then(() => {
+            this.axios
+              .get("/api/StaffListFunction/")
+              .then((res) => {
+                console.log(res.data);
+                var string1 = JSON.stringify(res.data);
+                let arr = JSON.parse(string1);
+                console.log(arr);
+                this.items = arr;
+                this.items.sort((a, b) => {
+                  return a.staffID - b.staffID;
+                });
+                this.clear();
+              })
+              .catch((e) => {
+                alert(e);
               });
-              this.clear();
-            })
-            .catch((e) => {
-              alert(e);
-            });
-        })
-        .catch((e) => {
-          alert(e);
-        });
+          })
+          .catch((e) => {
+            alert(e);
+          });
       }
     },
     clear() {
-        this.code = "";
-        this.last_name = "";
-        this.first_name = "";
-        this.last_name_kana = "";
-        this.first_name_kana = "";
-        this.zipcode1 = "";
-        this.zipcode2 = "";
-        this.prefecture = "";
-        this.city = "";
-        this.building = "";
-        this.tel1 = "";
-        this.tel2 = "";
-        this.tel3 = "";
-        this.mail = "";
-        this.codeFlg = false;
-        this.nameFlg = false;
-        this.namekanaFlg = false;
-        this.zipcodeFlg = false;
-        this.prefectureFlg = false;
-        this.cityFlg = false;
-        this.telFlg = false;
-        this.mailFlg = false;
-        this.clearFlg = true;
-        this.selectedStaff = null;
-        this.disabledFlg = false;
-        this.errors = {};
-        this.$nextTick(() =>{
-          this.clearFlg = false;
-        })
+      this.code = "";
+      this.last_name = "";
+      this.first_name = "";
+      this.last_name_kana = "";
+      this.first_name_kana = "";
+      this.zipcode1 = "";
+      this.zipcode2 = "";
+      this.prefecture = "";
+      this.city = "";
+      this.building = "";
+      this.tel1 = "";
+      this.tel2 = "";
+      this.tel3 = "";
+      this.mail = "";
+      this.codeFlg = false;
+      this.nameFlg = false;
+      this.namekanaFlg = false;
+      this.zipcodeFlg = false;
+      this.prefectureFlg = false;
+      this.cityFlg = false;
+      this.telFlg = false;
+      this.mailFlg = false;
+      this.clearFlg = true;
+      this.selectedStaff = null;
+      this.errors = {};
+      this.$nextTick(() => {
+        this.clearFlg = false;
+      });
       // location.reload();
     },
     selectRow(item) {
@@ -460,7 +468,6 @@ export default {
         ? false
         : true;
     },
-
   },
   watch: {
     // リアルタイムでバリデーションチェックを行う
@@ -476,7 +483,7 @@ export default {
           this.$set(this.errors, "code", "半角数字で入力してください。");
           this.codeFlg = false;
         }
-      } 
+      }
     },
     last_name(last_name) {
       if (this.clearFlg == false) {
@@ -490,7 +497,7 @@ export default {
           this.$delete(this.errors, "name");
           this.nameFlg = true;
         }
-      } 
+      }
     },
     first_name(first_name) {
       if (this.clearFlg == false) {
@@ -504,7 +511,7 @@ export default {
           this.$delete(this.errors, "name");
           this.nameFlg = true;
         }
-      } 
+      }
     },
     last_name_kana(last_name_kana) {
       if (this.clearFlg == false) {
@@ -524,7 +531,7 @@ export default {
           this.$delete(this.errors, "namekana");
           this.namekanaFlg = true;
         }
-      } 
+      }
     },
     first_name_kana(first_name_kana) {
       if (this.clearFlg == false) {
@@ -544,7 +551,7 @@ export default {
           this.$delete(this.errors, "namekana");
           this.namekanaFlg = true;
         }
-      } 
+      }
     },
     zipcode1(zipcode1) {
       if (this.clearFlg == false) {
@@ -565,7 +572,7 @@ export default {
           );
           this.zipcodeFlg = false;
         }
-      } 
+      }
     },
     zipcode2(zipcode2) {
       if (this.clearFlg == false) {
@@ -578,6 +585,17 @@ export default {
         ) {
           this.$delete(this.errors, "zipcode");
           this.zipcodeFlg = true;
+          this.axios
+            .get(
+              "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+                this.zipcode1 +
+                this.zipcode2
+            )
+            .then((res) => {
+              this.prefecture = res.data.results[0].address1;
+              this.city =
+                res.data.results[0].address2 + res.data.results[0].address3;
+            });
         } else {
           this.$set(
             this.errors,
@@ -586,7 +604,7 @@ export default {
           );
           this.zipcodeFlg = false;
         }
-      } 
+      }
     },
     prefecture(prefecture) {
       if (this.clearFlg == false) {
@@ -600,7 +618,7 @@ export default {
           this.$delete(this.errors, "prefecture");
           this.prefectureFlg = true;
         }
-      } 
+      }
     },
     city(city) {
       if (this.clearFlg == false) {
@@ -614,7 +632,7 @@ export default {
           this.$delete(this.errors, "city");
           this.cityFlg = true;
         }
-      } 
+      }
     },
     building(building) {
       if (this.clearFlg == false) {
@@ -623,7 +641,7 @@ export default {
         } else {
           this.$delete(this.errors, "building");
         }
-      } 
+      }
     },
     tel1(tel1) {
       if (this.clearFlg == false) {
@@ -645,7 +663,7 @@ export default {
           );
           this.telFlg = false;
         }
-      } 
+      }
     },
     tel2(tel2) {
       if (this.clearFlg == false) {
@@ -667,7 +685,7 @@ export default {
           );
           this.telFlg = false;
         }
-      } 
+      }
     },
     tel3(tel3) {
       if (this.clearFlg == false) {
@@ -689,11 +707,10 @@ export default {
           );
           this.telFlg = false;
         }
-      } 
+      }
     },
     mail(mail) {
       if (this.clearFlg == false) {
- 
         if (!mail) {
           this.$set(this.errors, "mail", "必須入力項目です。");
           this.mailFlg = false;
@@ -715,7 +732,7 @@ export default {
           this.$delete(this.errors, "mail");
           this.mailFlg = true;
         }
-      } 
+      }
     },
   },
 };

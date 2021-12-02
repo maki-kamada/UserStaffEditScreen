@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p>顧客マスタ</p> 
+    <p>顧客マスタ</p>
     <div class="item datatable">
       <table class="data">
         <thead>
@@ -10,7 +10,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.userID"  @click="selectRow(item)"  :class="{'highlight': (item == selectedUser)}">
+          <tr
+            v-for="item in items"
+            :key="item.userID"
+            @click="selectRow(item)"
+            :class="{ highlight: item == selectedUser }"
+          >
             <td class="row1">{{ item.userID }}</td>
             <td class="row2">{{ item.companyName }}</td>
           </tr>
@@ -20,8 +25,8 @@
       <!-- <button @click="showData" type="button">dataをshow!</button> -->
     </div>
     <div class="item">
-    <form>
-      <table class="form">
+      <form>
+        <table class="form">
           <!-- 会社名フォーム -->
           <tr>
             <div>
@@ -53,9 +58,9 @@
               <td>
                 <input class="numberInput" type="text" v-model="zipcode2" />
               </td>
-              <td>
+              <!-- <td>
                 <button type="button" @click="zipcodeSearch">住所検索</button>
-              </td>
+              </td> -->
               <td class="errMsg">
                 <span>{{ errors.zipcode }}</span>
               </td>
@@ -129,14 +134,16 @@
               </td>
             </div>
           </tr>
-      </table>
-    </form>
-    <div class="register">
-      <button type="button"  @click="clear">クリア</button>
-      <button type="button" :disabled="isDisabled" @click="post">新規追加</button>
-      <button type="button"  @click="put">更新</button>
-      <button type="button"  @click="del">削除</button>
-    </div>
+        </table>
+      </form>
+      <div class="register">
+        <button type="button" @click="clear">クリア</button>
+        <button type="button" :disabled="isDisabled" @click="post">
+          新規追加
+        </button>
+        <button type="button" :disabled="editDisabled" @click="put">更新</button>
+        <button type="button" :disabled="editDisabled" @click="del">削除</button>
+      </div>
     </div>
   </div>
 </template>
@@ -147,24 +154,23 @@
 // import Table from "@/components/Table.vue";
 
 export default {
-//   components: {
-//     Table,
-//   },
-beforeCreate() {
+  //   components: {
+  //     Table,
+  //   },
+  beforeCreate() {
     this.axios
-        .get("/api/UserListFunction/")
-        .then((res) => {
-          console.log(res.data);
-          var string1 = JSON.stringify(res.data);
-          let arr = JSON.parse(string1);
-          console.log(arr);
-          this.items = arr;
-        })
-        .catch((e) => {
-          alert(e);
-        });
-
-},
+      .get("/api/UserListFunction/")
+      .then((res) => {
+        console.log(res.data);
+        var string1 = JSON.stringify(res.data);
+        let arr = JSON.parse(string1);
+        console.log(arr);
+        this.items = arr;
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  },
 
   data() {
     return {
@@ -195,33 +201,43 @@ beforeCreate() {
     };
   },
   methods: {
-    zipcodeSearch() {
-      this.axios
-      .get("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + this.zipcode1 + this.zipcode2)
-      .then(res => {
-        this.prefecture = res.data.results[0].address1
-        this.city = res.data.results[0].address2 + res.data.results[0].address3
-      })
-    },
+    // zipcodeSearch() {
+    //   this.axios
+    //     .get(
+    //       "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+    //         this.zipcode1 +
+    //         this.zipcode2
+    //     )
+    //     .then((res) => {
+    //       this.prefecture = res.data.results[0].address1;
+    //       this.city =
+    //         res.data.results[0].address2 + res.data.results[0].address3;
+    //     });
+    // },
     post() {
+      if (confirm("本当に新規追加しますか？")) {
       var now = new Date();
       this.axios
-        .post("/api/UserRegister/",{
+        .post(
+          "/api/UserRegister/",
+          {
             CompanyName: this.company,
             PresidentName: this.president,
-            ZipCode: this.zipcode1+this.zipcode2,
+            ZipCode: this.zipcode1 + this.zipcode2,
             Prefecture: this.prefecture,
             City: this.city,
             Building: this.building,
-            Tel: this.tel1+"-"+this.tel2+"-"+this.tel3,
-            Fax: this.fax1+"-"+this.fax2+"-"+this.fax3,
+            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+            Fax: this.fax1 + "-" + this.fax2 + "-" + this.fax3,
             Mail: this.mail,
             DeleteDate: null,
             LastUpdate: now,
-            LastAdd: now
-        }, {
-  headers: {"Content-Type": "application/x-www-form-urlencoded"}
-})
+            LastAdd: now,
+          },
+          {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          }
+        )
         .then(() => {
           this.axios
             .get("/api/UserListFunction/")
@@ -231,6 +247,7 @@ beforeCreate() {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
+              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -239,9 +256,10 @@ beforeCreate() {
         .catch((e) => {
           alert(e);
         });
-  
+      }
     },
     put() {
+      if (confirm("本当に更新しますか？")) {
       var now = new Date();
       this.axios
         .post(
@@ -250,12 +268,12 @@ beforeCreate() {
             UserID: this.selectedUser.userID,
             CompanyName: this.company,
             PresidentName: this.president,
-            ZipCode: this.zipcode1+this.zipcode2,
+            ZipCode: this.zipcode1 + this.zipcode2,
             Prefecture: this.prefecture,
             City: this.city,
             Building: this.building,
-            Tel: this.tel1+"-"+this.tel2+"-"+this.tel3,
-            Fax: this.fax1+"-"+this.fax2+"-"+this.fax3,
+            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+            Fax: this.fax1 + "-" + this.fax2 + "-" + this.fax3,
             Mail: this.mail,
             DeleteDate: null,
             LastUpdate: now,
@@ -274,6 +292,7 @@ beforeCreate() {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
+              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -282,8 +301,10 @@ beforeCreate() {
         .catch((e) => {
           alert(e);
         });
+      }
     },
     del() {
+      if (confirm("本当に削除しますか？")) {
       var now = new Date();
       this.axios
         .post(
@@ -292,12 +313,12 @@ beforeCreate() {
             UserID: this.selectedUser.userID,
             CompanyName: this.company,
             PresidentName: this.president,
-            ZipCode: this.zipcode1+this.zipcode2,
+            ZipCode: this.zipcode1 + this.zipcode2,
             Prefecture: this.prefecture,
             City: this.city,
             Building: this.building,
-            Tel: this.tel1+"-"+this.tel2+"-"+this.tel3,
-            Fax: this.fax1+"-"+this.fax2+"-"+this.fax3,
+            Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
+            Fax: this.fax1 + "-" + this.fax2 + "-" + this.fax3,
             Mail: this.mail,
             DeleteDate: now,
             LastUpdate: now,
@@ -316,6 +337,7 @@ beforeCreate() {
               let arr = JSON.parse(string1);
               console.log(arr);
               this.items = arr;
+              this.clear();
             })
             .catch((e) => {
               alert(e);
@@ -324,6 +346,7 @@ beforeCreate() {
         .catch((e) => {
           alert(e);
         });
+      }
     },
     clear() {
       this.company = "";
@@ -340,38 +363,40 @@ beforeCreate() {
       this.fax2 = "";
       this.fax3 = "";
       this.mail = "";
+      this.companyFlg = false;
+      this.zipcodeFlg = false;
+      this.prefectureFlg = false;
+      this.cityFlg = false;
+      this.telFlg = false;
+      this.mailFlg = false;
       this.clearFlg = true;
-        this.selectedUser = [];
-        this.errors = {};
-        this.$nextTick(() =>{
-          this.clearFlg = false
-        })
-
+      this.selectedUser = null;
+      this.errors = {};
+      this.$nextTick(() => {
+        this.clearFlg = false;
+      });
     },
     selectRow(item) {
       this.selectedUser = item;
       this.company = item.companyName;
       this.president = item.presidentName;
-      this.zipcode1 = String(item.zipCode).slice(0,3);
-      this.zipcode2 = String(item.zipCode).slice(3,7);
+      this.zipcode1 = String(item.zipCode).slice(0, 3);
+      this.zipcode2 = String(item.zipCode).slice(3, 7);
       this.prefecture = item.prefecture;
       this.city = item.city;
       this.building = item.building;
-      var tel = item.tel.split('-');
+      var tel = item.tel.split("-");
       this.tel1 = tel[0];
       this.tel2 = tel[1];
       this.tel3 = tel[2];
-      if(item.fax != ""){
-        var fax = item.fax.split('-');
+      if (item.fax != "") {
+        var fax = item.fax.split("-");
         this.fax1 = fax[0];
         this.fax2 = fax[1];
         this.fax3 = fax[2];
       }
       this.mail = item.mail;
-      
-
-    }
-
+    },
   },
   computed: {
     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
@@ -382,251 +407,285 @@ beforeCreate() {
         this.cityFlg == true &&
         this.telFlg == true &&
         this.mailFlg == true &&
+        this.selectedUser == null &&
         Object.keys(this.errors).length == 0
         ? false
         : true;
     },
+    editDisabled() {
+      return this.companyFlg == true &&
+        this.zipcodeFlg == true &&
+        this.prefectureFlg == true &&
+        this.cityFlg == true &&
+        this.telFlg == true &&
+        this.mailFlg == true &&
+        this.selectedUser != null &&
+        Object.keys(this.errors).length == 0
+        ? false
+        : true;
+    }
   },
   watch: {
     // リアルタイムでバリデーションチェックを行う
     company(company) {
       if (this.clearFlg == false) {
-      if (!company) {
-        this.$set(this.errors, "company", "必須入力項目です。");
-        this.companyFlg = false;
-      } else if (company.length > 50) {
-        this.$set(this.errors, "company", "50文字以内で入力してください。");
-        this.companyFlg = false;
-      } else {
-        this.$delete(this.errors, "company");
-        this.companyFlg = true;
-      }
+        if (!company) {
+          this.$set(this.errors, "company", "必須入力項目です。");
+          this.companyFlg = false;
+        } else if (company.length > 50) {
+          this.$set(this.errors, "company", "50文字以内で入力してください。");
+          this.companyFlg = false;
+        } else {
+          this.$delete(this.errors, "company");
+          this.companyFlg = true;
+        }
       }
     },
     president(president) {
       if (this.clearFlg == false) {
-      if (president.length > 50) {
-        this.$set(this.errors, "president", "50文字以内で入力してください。");
-      } else {
-        this.$delete(this.errors, "president");
-      }
+        if (president.length > 50) {
+          this.$set(this.errors, "president", "50文字以内で入力してください。");
+        } else {
+          this.$delete(this.errors, "president");
+        }
       }
     },
     zipcode1(zipcode1) {
       if (this.clearFlg == false) {
-      if (!zipcode1 || !this.zipcode2) {
-        this.$set(this.errors, "zipcode", "必須入力項目です。");
-        this.zipcodeFlg = false;
-      } else if (zipcode1.match(/^[1-9]{1}[0-9]{2}$/) && this.zipcode2.match(/^\d{4}$/)) {
-        this.$delete(this.errors, "zipcode");
-        this.zipcodeFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "zipcode",
-          "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
-        );
-        this.zipcodeFlg = false;
-      }
+        if (!zipcode1 || !this.zipcode2) {
+          this.$set(this.errors, "zipcode", "必須入力項目です。");
+          this.zipcodeFlg = false;
+        } else if (
+          zipcode1.match(/^[1-9]{1}[0-9]{2}$/) &&
+          this.zipcode2.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "zipcode");
+          this.zipcodeFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "zipcode",
+            "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
+          );
+          this.zipcodeFlg = false;
+        }
       }
     },
     zipcode2(zipcode2) {
       if (this.clearFlg == false) {
-      if (!this.zipcode1 || !zipcode2) {
-        this.$set(this.errors, "zipcode", "必須入力項目です。");
-        this.zipcodeFlg = false;
-      } else if (this.zipcode1.match(/^[1-9]{1}[0-9]{2}$/) && zipcode2.match(/^\d{4}$/)) {
-        this.$delete(this.errors, "zipcode");
-        this.zipcodeFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "zipcode",
-          "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
-        );
-        this.zipcodeFlg = false;
-      }
+        if (!this.zipcode1 || !zipcode2) {
+          this.$set(this.errors, "zipcode", "必須入力項目です。");
+          this.zipcodeFlg = false;
+        } else if (
+          this.zipcode1.match(/^[1-9]{1}[0-9]{2}$/) &&
+          zipcode2.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "zipcode");
+          this.zipcodeFlg = true;
+          this.axios
+            .get(
+              "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+                this.zipcode1 +
+                this.zipcode2
+            )
+            .then((res) => {
+              this.prefecture = res.data.results[0].address1;
+              this.city =
+                res.data.results[0].address2 + res.data.results[0].address3;
+            });
+        } else {
+          this.$set(
+            this.errors,
+            "zipcode",
+            "先頭が0以外の半角数字で入力してください。（3桁＋4桁）"
+          );
+          this.zipcodeFlg = false;
+        }
       }
     },
     prefecture(prefecture) {
       if (this.clearFlg == false) {
-      if (!prefecture) {
-        this.$set(this.errors, "prefecture", "必須入力項目です。");
-        this.prefectureFlg = false;
-      } else if (prefecture.length > 50) {
-        this.$set(this.errors, "president", "50文字以内で入力してください。");
-        this.prefectureFlg = false;
-      } else {
-        this.$delete(this.errors, "prefecture");
-        this.prefectureFlg = true;
-      }
+        if (!prefecture) {
+          this.$set(this.errors, "prefecture", "必須入力項目です。");
+          this.prefectureFlg = false;
+        } else if (prefecture.length > 50) {
+          this.$set(this.errors, "president", "50文字以内で入力してください。");
+          this.prefectureFlg = false;
+        } else {
+          this.$delete(this.errors, "prefecture");
+          this.prefectureFlg = true;
+        }
       }
     },
     city(city) {
       if (this.clearFlg == false) {
-      if (!city) {
-        this.$set(this.errors, "city", "必須入力項目です。");
-        this.cityFlg = false;
-      } else if (city.length > 50) {
-        this.$set(this.errors, "city", "50文字以内で入力してください。");
-        this.cityFlg = false;
-      } else {
-        this.$delete(this.errors, "city");
-        this.cityFlg = true;
-      }
+        if (!city) {
+          this.$set(this.errors, "city", "必須入力項目です。");
+          this.cityFlg = false;
+        } else if (city.length > 50) {
+          this.$set(this.errors, "city", "50文字以内で入力してください。");
+          this.cityFlg = false;
+        } else {
+          this.$delete(this.errors, "city");
+          this.cityFlg = true;
+        }
       }
     },
     building(building) {
       if (this.clearFlg == false) {
-      if (building.length > 50) {
-        this.$set(this.errors, "building", "50文字以内で入力してください。");
-      } else {
-        this.$delete(this.errors, "building");
-      }
+        if (building.length > 50) {
+          this.$set(this.errors, "building", "50文字以内で入力してください。");
+        } else {
+          this.$delete(this.errors, "building");
+        }
       }
     },
     tel1(tel1) {
       if (this.clearFlg == false) {
-      if (!tel1 || !this.tel2 || !this.tel3) {
-        this.$set(this.errors, "tel", "必須入力項目です。");
-        this.telFlg = false;
-      } else if (
-        tel1.match(/^\d{2,3}$/) &&
-        this.tel2.match(/^\d{1,4}$/) &&
-        this.tel3.match(/^\d{4}$/)
-      ) {
-        this.$delete(this.errors, "tel");
-        this.telFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "tel",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-        this.telFlg = false;
-      }
+        if (!tel1 || !this.tel2 || !this.tel3) {
+          this.$set(this.errors, "tel", "必須入力項目です。");
+          this.telFlg = false;
+        } else if (
+          tel1.match(/^\d{2,3}$/) &&
+          this.tel2.match(/^\d{1,4}$/) &&
+          this.tel3.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "tel");
+          this.telFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "tel",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+          this.telFlg = false;
+        }
       }
     },
     tel2(tel2) {
       if (this.clearFlg == false) {
-      if (!this.tel1 || !tel2 || !this.tel3) {
-        this.$set(this.errors, "tel", "必須入力項目です。");
-        this.telFlg = false;
-      } else if (
-        this.tel1.match(/^\d{2,3}$/) &&
-        tel2.match(/^\d{1,4}$/) &&
-        this.tel3.match(/^\d{4}$/)
-      ) {
-        this.$delete(this.errors, "tel");
-        this.telFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "tel",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-        this.telFlg = false;
-      }
+        if (!this.tel1 || !tel2 || !this.tel3) {
+          this.$set(this.errors, "tel", "必須入力項目です。");
+          this.telFlg = false;
+        } else if (
+          this.tel1.match(/^\d{2,3}$/) &&
+          tel2.match(/^\d{1,4}$/) &&
+          this.tel3.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "tel");
+          this.telFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "tel",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+          this.telFlg = false;
+        }
       }
     },
     tel3(tel3) {
       if (this.clearFlg == false) {
-      if (!this.tel1 || !this.tel2 || !tel3) {
-        this.$set(this.errors, "tel", "必須入力項目です。");
-        this.telFlg = false;
-      } else if (
-        this.tel1.match(/^\d{2,3}$/) &&
-        this.tel2.match(/^\d{1,4}$/) &&
-        tel3.match(/^\d{4}$/)
-      ) {
-        this.$delete(this.errors, "tel");
-        this.telFlg = true;
-      } else {
-        this.$set(
-          this.errors,
-          "tel",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-        this.telFlg = false;
-      }
+        if (!this.tel1 || !this.tel2 || !tel3) {
+          this.$set(this.errors, "tel", "必須入力項目です。");
+          this.telFlg = false;
+        } else if (
+          this.tel1.match(/^\d{2,3}$/) &&
+          this.tel2.match(/^\d{1,4}$/) &&
+          tel3.match(/^\d{4}$/)
+        ) {
+          this.$delete(this.errors, "tel");
+          this.telFlg = true;
+        } else {
+          this.$set(
+            this.errors,
+            "tel",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+          this.telFlg = false;
+        }
       }
     },
     fax1(fax1) {
       if (this.clearFlg == false) {
-      if (fax1 == "" && this.fax2 == "" && this.fax3 == "") {
-        this.$delete(this.errors, "fax");
-      } else if (
-        !fax1.match(/^\d{2,3}$/) ||
-        !this.fax2.match(/^\d{1,4}$/) ||
-        !this.fax3.match(/^\d{4}$/)
-      ) {
-        this.$set(
-          this.errors,
-          "fax",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-      } else {
-        this.$delete(this.errors, "fax");
-      }
+        if (fax1 == "" && this.fax2 == "" && this.fax3 == "") {
+          this.$delete(this.errors, "fax");
+        } else if (
+          !fax1.match(/^\d{2,3}$/) ||
+          !this.fax2.match(/^\d{1,4}$/) ||
+          !this.fax3.match(/^\d{4}$/)
+        ) {
+          this.$set(
+            this.errors,
+            "fax",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+        } else {
+          this.$delete(this.errors, "fax");
+        }
       }
     },
     fax2(fax2) {
       if (this.clearFlg == false) {
-      if (this.fax1 == "" && fax2 == "" && this.fax3 == "") {
-        this.$delete(this.errors, "fax");
-      } else if (
-        !this.fax1.match(/^\d{2,3}$/) ||
-        fax2.match(/^\d{1,4}$/) ||
-        !this.fax3.match(/^\d{4}$/)
-      ) {
-        this.$set(
-          this.errors,
-          "fax",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-      } else {
-        this.$delete(this.errors, "fax");
-      }
+        if (this.fax1 == "" && fax2 == "" && this.fax3 == "") {
+          this.$delete(this.errors, "fax");
+        } else if (
+          !this.fax1.match(/^\d{2,3}$/) ||
+          fax2.match(/^\d{1,4}$/) ||
+          !this.fax3.match(/^\d{4}$/)
+        ) {
+          this.$set(
+            this.errors,
+            "fax",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+        } else {
+          this.$delete(this.errors, "fax");
+        }
       }
     },
     fax3(fax3) {
       if (this.clearFlg == false) {
-      if (this.fax1 == "" && this.fax2 == "" && fax3 == "") {
-        this.$delete(this.errors, "fax");
-      } else if (
-        !this.fax1.match(/^\d{2,3}$/) ||
-        !this.fax2.match(/^\d{1,4}$/) ||
-        !fax3.match(/^\d{4}$/)
-      ) {
-        this.$set(
-          this.errors,
-          "fax",
-          "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
-        );
-      } else {
-        this.$delete(this.errors, "fax");
-      }
+        if (this.fax1 == "" && this.fax2 == "" && fax3 == "") {
+          this.$delete(this.errors, "fax");
+        } else if (
+          !this.fax1.match(/^\d{2,3}$/) ||
+          !this.fax2.match(/^\d{1,4}$/) ||
+          !fax3.match(/^\d{4}$/)
+        ) {
+          this.$set(
+            this.errors,
+            "fax",
+            "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+          );
+        } else {
+          this.$delete(this.errors, "fax");
+        }
       }
     },
     mail(mail) {
       if (this.clearFlg == false) {
-      if (!mail) {
-        this.$set(this.errors, "mail", "必須入力項目です。");
-        this.mailFlg = false;
-      } else if (
-        !mail.match(
-          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        )
-      ) {
-        this.$set(this.errors, "mail", "正しいメール形式で入力してください。");
-        this.mailFlg = false;
-      } else if (mail.length > 40) {
-        this.$set(this.errors, "mail", "40文字以内で入力してください。");
-        this.mailFlg = false;
-      } else {
-        this.$delete(this.errors, "mail");
-        this.mailFlg = true;
-      }
+        if (!mail) {
+          this.$set(this.errors, "mail", "必須入力項目です。");
+          this.mailFlg = false;
+        } else if (
+          !mail.match(
+            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+          )
+        ) {
+          this.$set(
+            this.errors,
+            "mail",
+            "正しいメール形式で入力してください。"
+          );
+          this.mailFlg = false;
+        } else if (mail.length > 40) {
+          this.$set(this.errors, "mail", "40文字以内で入力してください。");
+          this.mailFlg = false;
+        } else {
+          this.$delete(this.errors, "mail");
+          this.mailFlg = true;
+        }
       }
     },
   },
@@ -660,7 +719,7 @@ beforeCreate() {
 .highlight {
   background: rgb(230, 230, 230);
 }
-tr:hover{
+tr:hover {
   cursor: pointer;
 }
 table.data {
