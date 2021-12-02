@@ -265,7 +265,7 @@ export default {
         .post(
           "/api/StaffUpdate/",
           {
-            ID: this.selectedStaff.iD,
+            ID: this.selectedStaff.id,
             StaffID: this.code,
             StaffLastName: this.last_name,
             StaffFirstName: this.first_name,
@@ -309,7 +309,7 @@ export default {
         .post(
           "/api/StaffDelete/",
           {
-            ID: this.selectedStaff.iD,
+            ID: this.selectedStaff.id,
             StaffID: this.code,
             StaffLastName: this.last_name,
             StaffFirstName: this.first_name,
