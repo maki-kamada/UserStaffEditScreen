@@ -9,7 +9,7 @@
             <th class="row2 fixed">会社名</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="test">
           <tr
             v-for="item in items"
             :key="item.userID"
@@ -695,104 +695,6 @@ export default {
 
 
 <style scoped>
-.container {
-  width: 100%;
-  margin: 50px auto;
-  text-align: center;
-}
-.item {
-  display: inline-block;
-  vertical-align: top;
-  margin: auto 20px;
-}
-.datatable {
-  overflow-y: scroll;
-}
-.data th {
-  border: solid 1px;
-  padding: 10px;
-}
-.data td {
-  padding: 10px;
-  border-right: solid 1px;
-}
-.highlight {
-  background: rgb(230, 230, 230);
-}
-tr:hover {
-  cursor: pointer;
-}
-table.data {
-  border: solid 1px;
-  border-collapse: collapse;
-  width: 600px;
-  height: 50px;
-}
-.row1 {
-  width: 30%;
-}
-.row2 {
-  width: 70%;
-}
-.fixed {
-  position: sticky;
-  top: 0;
-  color: #fff;
-  background: #333;
-}
-.fixed::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #ccc;
-}
+@import "../css/style.css" 
 
-table {
-  margin-left: auto;
-  margin-right: auto;
-}
-label {
-  display: inline-block;
-  white-space: nowrap;
-}
-input {
-  width: 300px;
-  font-size: 20px;
-  padding: 0px;
-  margin-bottom: 15px;
-}
-button {
-  width: 100px;
-  height: 40px;
-  margin: auto 15px;
-}
-.register {
-  width: 100%;
-  text-align: center;
-}
-span {
-  font-size: 14px;
-  color: red;
-  width: 90%;
-  display: block;
-}
-.hyphen {
-  width: 30px;
-}
-.form th {
-  display: block;
-  text-align: left;
-  margin: 0px;
-}
-.numberInput {
-  width: 100px;
-}
-.errMsg {
-  display: flex;
-  vertical-align: bottom;
-  text-align: left;
-}
 </style>
