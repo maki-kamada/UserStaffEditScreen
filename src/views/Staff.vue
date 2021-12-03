@@ -9,7 +9,7 @@
             <th class="row2 fixed">社員名</th>
           </tr>
         </thead>
-        <tbody class="test">
+        <tbody>
           <tr
             v-for="item in items"
             :key="item.staffID"

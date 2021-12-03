@@ -15,15 +15,21 @@ body {
   .datatable {
     overflow-y: scroll;
     height: 200px;
+    width: max-content;
     border: 1px solid #333;
   }
   .data th {
-    border: solid 1px;
+    /* border: solid 1px; */
     padding: 10px;
   }
   .data td {
     padding: 10px;
-    border-right: solid 1px;
+  }
+  .row1 {
+    border-right: solid 1px #333;
+  }
+  .row2 fixed {
+    border-right: solid 1px #333;
   }
   .highlight {
     background: rgb(230, 230, 230);
@@ -48,16 +54,6 @@ body {
     top: 0;
     color: #fff;
     background: #333;
-  }
-  .test::before {
-    content: "";
-    position: absolute;
-    padding: 0;
-    top: -1px;
-    left: -1px;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #333;
   }
   /* 
   table {
