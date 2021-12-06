@@ -239,6 +239,25 @@ export default {
     //         res.data.results[0].address2 + res.data.results[0].address3;
     //     });
     // },
+    get(){
+      this.axios
+              .get("/api/StaffListFunction/")
+              .then((res) => {
+                console.log(res.data);
+                var string1 = JSON.stringify(res.data);
+                let arr = JSON.parse(string1);
+                console.log(arr);
+                this.items = arr;
+                this.items.sort((a, b) => {
+                  return a.staffID - b.staffID;
+                });
+                this.clear();
+              })
+              .catch((e) => {
+                alert(e);
+              });
+
+    },
     post() {
       if (confirm("本当に新規追加しますか？")) {
         var now = new Date();
@@ -266,22 +285,7 @@ export default {
             }
           )
           .then(() => {
-            this.axios
-              .get("/api/StaffListFunction/")
-              .then((res) => {
-                console.log(res.data);
-                var string1 = JSON.stringify(res.data);
-                let arr = JSON.parse(string1);
-                console.log(arr);
-                this.items = arr;
-                this.items.sort((a, b) => {
-                  return a.staffID - b.staffID;
-                });
-                this.clear();
-              })
-              .catch((e) => {
-                alert(e);
-              });
+            this.get()
           })
           .catch((e) => {
             alert(e);
@@ -316,22 +320,7 @@ export default {
             }
           )
           .then(() => {
-            this.axios
-              .get("/api/StaffListFunction/")
-              .then((res) => {
-                console.log(res.data);
-                var string1 = JSON.stringify(res.data);
-                let arr = JSON.parse(string1);
-                console.log(arr);
-                this.items = arr;
-                this.items.sort((a, b) => {
-                  return a.staffID - b.staffID;
-                });
-                this.clear();
-              })
-              .catch((e) => {
-                alert(e);
-              });
+            this.get()
           })
           .catch((e) => {
             alert(e);
@@ -366,22 +355,7 @@ export default {
             }
           )
           .then(() => {
-            this.axios
-              .get("/api/StaffListFunction/")
-              .then((res) => {
-                console.log(res.data);
-                var string1 = JSON.stringify(res.data);
-                let arr = JSON.parse(string1);
-                console.log(arr);
-                this.items = arr;
-                this.items.sort((a, b) => {
-                  return a.staffID - b.staffID;
-                });
-                this.clear();
-              })
-              .catch((e) => {
-                alert(e);
-              });
+            this.get()
           })
           .catch((e) => {
             alert(e);
