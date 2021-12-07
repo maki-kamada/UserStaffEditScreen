@@ -157,19 +157,9 @@ export default {
   //   components: {
   //     Table,
   //   },
-  beforeCreate() {
-    this.axios
-      .get("/api/UserListFunction/")
-      .then((res) => {
-        console.log(res.data);
-        var string1 = JSON.stringify(res.data);
-        let arr = JSON.parse(string1);
-        console.log(arr);
-        this.items = arr;
-      })
-      .catch((e) => {
-        alert(e);
-      });
+  created() {
+    this.get()
+
   },
 
   data() {
@@ -226,7 +216,7 @@ export default {
               this.clear();
             })
             .catch((e) => {
-              alert(e);
+              console.log(e);
             });
 
     },

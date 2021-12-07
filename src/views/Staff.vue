@@ -169,26 +169,14 @@
 <script>
 // import Table from '@/components/Table.vue'
 
+
 export default {
   // components: {
   //     Table
   // },
-  beforeCreate() {
-    this.axios
-      .get("/api/StaffListFunction/")
-      .then((res) => {
-        console.log(res.data);
-        var string1 = JSON.stringify(res.data);
-        let arr = JSON.parse(string1);
-        console.log(arr);
-        this.items = arr;
-        this.items.sort((a, b) => {
-          return a.staffID - b.staffID;
-        });
-      })
-      .catch((e) => {
-        alert(e);
-      });
+  created() {
+    this.get()
+
   },
 
   data() {
@@ -254,7 +242,7 @@ export default {
                 this.clear();
               })
               .catch((e) => {
-                alert(e);
+                console.log(e);
               });
 
     },
