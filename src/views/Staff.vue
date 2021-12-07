@@ -32,10 +32,10 @@
           <!-- 社員コードフォーム -->
           <tr>
             <div>
-              <th><label for="code">社員コード</label></th>
-              <td><input type="text" v-model="code" /></td>
+              <th><label for="id">社員コード</label></th>
+              <td><input type="text" v-model="id" /></td>
               <td class="errMsg">
-                <span>{{ errors.code }}</span>
+                <span>{{ errors.id }}</span>
               </td>
             </div>
           </tr>
@@ -181,7 +181,7 @@ export default {
 
   data() {
     return {
-      code: "",
+      id: "",
       last_name: "",
       first_name: "",
       last_name_kana: "",
@@ -253,7 +253,7 @@ export default {
           .post(
             "/api/StaffRegister/",
             {
-              StaffID: this.code,
+              StaffID: this.id,
               StaffLastName: this.last_name,
               StaffFirstName: this.first_name,
               StaffLastNameKana: this.last_name_kana,
@@ -288,7 +288,7 @@ export default {
             "/api/StaffUpdate/",
             {
               ID: this.selectedStaff.id,
-              StaffID: this.code,
+              StaffID: this.id,
               StaffLastName: this.last_name,
               StaffFirstName: this.first_name,
               StaffLastNameKana: this.last_name_kana,
@@ -323,7 +323,7 @@ export default {
             "/api/StaffDelete/",
             {
               ID: this.selectedStaff.id,
-              StaffID: this.code,
+              StaffID: this.id,
               StaffLastName: this.last_name,
               StaffFirstName: this.first_name,
               StaffLastNameKana: this.last_name_kana,
@@ -351,7 +351,7 @@ export default {
       }
     },
     clear() {
-      this.code = "";
+      this.id = "";
       this.last_name = "";
       this.first_name = "";
       this.last_name_kana = "";
@@ -365,7 +365,7 @@ export default {
       this.tel2 = "";
       this.tel3 = "";
       this.mail = "";
-      this.codeFlg = false;
+      this.idFlg = false;
       this.nameFlg = false;
       this.namekanaFlg = false;
       this.zipcodeFlg = false;
@@ -383,7 +383,7 @@ export default {
     },
     selectRow(item) {
       this.selectedStaff = item;
-      this.code = String(item.staffID);
+      this.id = String(item.staffID);
       this.last_name = item.staffLastName;
       this.first_name = item.staffFirstName;
       this.last_name_kana = item.staffLastNameKana;
@@ -403,7 +403,7 @@ export default {
   computed: {
     // 必須入力項目が未入力の場合、送信ボタンが非活性化する
     isDisabled() {
-      return this.codeFlg == true &&
+      return this.idFlg == true &&
         this.nameFlg == true &&
         this.namekanaFlg == true &&
         this.zipcodeFlg == true &&
@@ -417,7 +417,7 @@ export default {
         : true;
     },
     editDisabled() {
-      return this.codeFlg == true &&
+      return this.idFlg == true &&
         this.nameFlg == true &&
         this.namekanaFlg == true &&
         this.zipcodeFlg == true &&
@@ -433,17 +433,17 @@ export default {
   },
   watch: {
     // リアルタイムでバリデーションチェックを行う
-    code(code) {
+    id(id) {
       if (this.clearFlg == false) {
-        if (!code) {
-          this.$set(this.errors, "code", "必須入力項目です。");
-          this.codeFlg = false;
-        } else if (code.match(/^([1-9]\d*|0)$/)) {
-          this.$delete(this.errors, "code");
-          this.codeFlg = true;
+        if (!id) {
+          this.$set(this.errors, "id", "必須入力項目です。");
+          this.idFlg = false;
+        } else if (id.match(/^([1-9]\d*|0)$/)) {
+          this.$delete(this.errors, "id");
+          this.idFlg = true;
         } else {
-          this.$set(this.errors, "code", "半角数字で入力してください。");
-          this.codeFlg = false;
+          this.$set(this.errors, "id", "半角数字で入力してください。");
+          this.idFlg = false;
         }
       }
     },
