@@ -208,6 +208,12 @@ export default {
     addUser() {
       if (confirm("本当に新規追加しますか？")) {
       var pNow = new Date();
+      var pFax = "";
+      if(this.fax1 != ""){
+        pFax = this.fax1 + "-" + this.fax2 + "-" + this.fax3;
+      }else{ 
+        pFax = "";
+      }
       this.axios
         .post(
           "/api/UserAdd/",
@@ -219,7 +225,7 @@ export default {
             City: this.city,
             Building: this.building,
             Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
-            Fax: this.fax1 + "-" + this.fax2 + "-" + this.fax3,
+            Fax: pFax,
             Mail: this.mail,
             DeleteDate: null,
             LastUpdate: pNow,
@@ -242,6 +248,12 @@ export default {
     updateUser() {
       if (confirm("本当に更新しますか？")) {
       var pNow = new Date();
+      var pFax;
+      if(this.fax1 != ""){
+        pFax = this.fax1 + "-" + this.fax2 + "-" + this.fax3;
+      }else{ 
+        pFax = "";
+      }
       this.axios
         .post(
           "/api/UserUpdate/",
@@ -254,7 +266,7 @@ export default {
             City: this.city,
             Building: this.building,
             Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
-            Fax: this.fax1 + "-" + this.fax2 + "-" + this.fax3,
+            Fax: pFax,
             Mail: this.mail,
             DeleteDate: null,
             LastUpdate: pNow,
@@ -277,6 +289,12 @@ export default {
     deleteUser() {
       if (confirm("本当に削除しますか？")) {
       var pNow = new Date();
+      var pFax;
+      if(this.fax1 != ""){
+        pFax = this.fax1 + "-" + this.fax2 + "-" + this.fax3;
+      }else{ 
+        pFax = "";
+      }
       this.axios
         .post(
           "/api/UserDelete/",
@@ -289,7 +307,7 @@ export default {
             City: this.city,
             Building: this.building,
             Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
-            Fax: this.fax1 + "-" + this.fax2 + "-" + this.fax3,
+            Fax: pFax,
             Mail: this.mail,
             DeleteDate: pNow,
             LastUpdate: pNow,
@@ -424,6 +442,17 @@ export default {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
           this.zipcodeFlg = true;
+          this.axios
+              .get(
+                "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+                  this.zipcode1 +
+                  this.zipcode2
+              )
+              .then((res) => {
+                this.prefecture = res.data.results[0].address1;
+                this.city =
+                  res.data.results[0].address2 + res.data.results[0].address3;
+              });
           if (!zipcode1 || !this.zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
             this.zipcodeFlg = false;

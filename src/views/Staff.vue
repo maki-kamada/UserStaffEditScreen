@@ -541,6 +541,17 @@ export default {
     zipcode1(zipcode1) {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
+          this.axios
+              .get(
+                "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+                  this.zipcode1 +
+                  this.zipcode2
+              )
+              .then((res) => {
+                this.prefecture = res.data.results[0].address1;
+                this.city =
+                  res.data.results[0].address2 + res.data.results[0].address3;
+              });
           this.zipcodeFlg = true;
           if (!zipcode1 || !this.zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
