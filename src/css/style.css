@@ -15,7 +15,7 @@ body {
   .datatable {
     overflow-y: scroll;
     /* height: 200px; */
-    min-height:50px; 
+    min-height:30px; 
     max-height:200px;
     width: max-content;
     border: 1px solid #333;

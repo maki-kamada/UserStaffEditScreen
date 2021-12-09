@@ -320,9 +320,9 @@ export default {
               Building: this.building,
               Tel: this.tel1 + "-" + this.tel2 + "-" + this.tel3,
               Mail: this.mail,
-              DeleteDate: pNow,
+              DeleteDate: null,
               LastUpdate: pNow,
-              LastAdd: pNow,
+              LastAdd: null,
             },
             {
               headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -388,6 +388,21 @@ export default {
       this.tel3 = tel[2];
       this.mail = row.mail;
     },
+
+    //郵便番号から住所を自動取得
+    zipcodeSearch() {
+      this.axios
+              .get(
+                "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+                  this.zipcode1 +
+                  this.zipcode2
+              )
+              .then((res) => {
+                this.prefecture = res.data.results[0].address1;
+                this.city =
+                  res.data.results[0].address2 + res.data.results[0].address3;
+              });
+    }
   },
 
   computed: {
@@ -439,7 +454,26 @@ export default {
             this.$set(this.errors, "id", "半角数字で入力してください。");
             this.idFlg = false;
             return
-          } 
+          }
+          if (id.length > 4) {
+            this.$set(this.errors, "id", "4桁以内で入力してください。");
+            this.idFlg = false;
+            return
+          }
+          var overlapCheck1 = this.table.find(value => value.staffID == id);
+          if (overlapCheck1 != null && this.selectedStaff == null){
+            this.$set(this.errors, "id", "重複した社員コードは登録できません。");
+            this.idFlg = false;
+            return
+          }else if (this.selectedStaff != null){
+            var exception = this.selectedStaff.staffID;
+            var overlapCheck2 = this.table.find(value => value.staffID == id && value.staffID != exception);
+            if (overlapCheck2 != null) {
+              this.$set(this.errors, "id", "重複した社員コードは登録できません。");
+              this.idFlg = false;
+              return
+            }
+          }
       }
     },
 
@@ -541,17 +575,7 @@ export default {
     zipcode1(zipcode1) {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
-          this.axios
-              .get(
-                "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
-                  this.zipcode1 +
-                  this.zipcode2
-              )
-              .then((res) => {
-                this.prefecture = res.data.results[0].address1;
-                this.city =
-                  res.data.results[0].address2 + res.data.results[0].address3;
-              });
+          this.zipcodeSearch()
           this.zipcodeFlg = true;
           if (!zipcode1 || !this.zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
@@ -573,22 +597,11 @@ export default {
       }
     },
 
-    //郵便番号から住所を自動取得
     zipcode2(zipcode2) {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
             this.zipcodeFlg = true;
-            this.axios
-              .get(
-                "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
-                  this.zipcode1 +
-                  this.zipcode2
-              )
-              .then((res) => {
-                this.prefecture = res.data.results[0].address1;
-                this.city =
-                  res.data.results[0].address2 + res.data.results[0].address3;
-              });
+            this.zipcodeSearch()
           if (!this.zipcode1 || !zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
             this.zipcodeFlg = false;
