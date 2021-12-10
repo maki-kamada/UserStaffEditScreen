@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <p>顧客情報</p><br>
+    <div class="subContainer">
     <div class="item datatable">
       <table class="data">
         <thead>
@@ -134,13 +135,14 @@
         </table>
       </form>
       <div class="register">
-        <button type="button" @click="clear">クリア</button>
+        <button type="button" id="clear_button" @click="clear">クリア</button>
         <button type="button" :disabled="isDisabled" @click="addUser">
           新規追加
         </button>
         <button type="button" :disabled="editDisabled" @click="updateUser">更新</button>
         <button type="button" :disabled="editDisabled" @click="deleteUser">削除</button>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -385,6 +387,8 @@ export default {
 
     //郵便番号から住所を自動取得
     zipcodeSearch() {
+      var clearButton = document.getElementById("clear_button");
+      clearButton.disabled = true;
       this.axios
               .get(
                 "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
@@ -395,6 +399,7 @@ export default {
                 this.prefecture = res.data.results[0].address1;
                 this.city =
                   res.data.results[0].address2 + res.data.results[0].address3;
+                clearButton.disabled = false;
               });
     }
   },
@@ -509,8 +514,9 @@ export default {
             return
           } 
           if (this.selectedUser == null){
-            this.zipcodeSearch()
-            return
+            this.zipcodeSearch().then(()=>{
+              return
+            })
           }
       }
     },
