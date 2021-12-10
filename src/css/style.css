@@ -6,6 +6,10 @@ body {
     margin: 50px auto;
     text-align: center;
   }
+  p {
+    font-size: 20px;
+    font-weight: bold;
+  }
   .item {
     display: inline-block;
     vertical-align: top;
@@ -45,10 +49,10 @@ body {
     width: 500px;
     border-spacing: 0ch;
   }
-  .row1 {
+  .column1 {
     width: 30%;
   }
-  .row2 {
+  .column2 {
     width: 70%;
   }
   .fixed {

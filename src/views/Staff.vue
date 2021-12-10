@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p>社員マスタ</p>
+    <p>社員情報</p><br>
     <div class="item datatable">
       <table class="data">
         <thead>
@@ -229,7 +229,7 @@ export default {
 
     //テーブルへのデータ新規追加
     addStaff() {
-      if (confirm("本当に新規追加しますか？")) {
+      if (confirm("新規追加しますか？")) {
         var pNow = new Date();
         this.axios
           .post(
@@ -265,7 +265,7 @@ export default {
 
     //テーブル内、選択された行データを更新
     updateStaff() {
-      if (confirm("本当に更新しますか？")) {
+      if (confirm("更新しますか？")) {
         var pNow = new Date();
         this.axios
           .post(
@@ -302,7 +302,7 @@ export default {
 
     //テーブル内、選択された行データを削除
     deleteStaff() {
-      if (confirm("本当に削除しますか？")) {
+      if (confirm("削除しますか？")) {
         var pNow = new Date();
         this.axios
           .post(
@@ -486,7 +486,7 @@ export default {
             this.nameFlg = false;
             return
           }
-          if (last_name.length > 50) {
+          if (last_name.length > 50 || this.first_name.length > 50) {
             this.$set(this.errors, "name", "50文字以内で入力してください。");
             this.nameFlg = false;
             return
@@ -503,7 +503,7 @@ export default {
             this.nameFlg = false;
             return
           }
-          if (first_name.length > 50) {
+          if (first_name.length > 50 || this.last_name.length > 50) {
             this.$set(this.errors, "name", "50文字以内で入力してください。");
             this.nameFlg = false;
             return
@@ -528,7 +528,7 @@ export default {
             this.namekanaFlg = false;
             return
           }
-          if (last_name_kana.length > 50) {
+          if (last_name_kana.length > 50 || this.first_name_kana > 50) {
             this.$set(
               this.errors,
               "namekana",
@@ -560,7 +560,7 @@ export default {
             this.namekanaFlg = false;
             return
           }
-          if (first_name_kana.length > 50) {
+          if (first_name_kana.length > 50 || this.last_name_kana > 50) {
             this.$set(
               this.errors,
               "namekana",
@@ -575,7 +575,7 @@ export default {
     zipcode1(zipcode1) {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
-          this.zipcodeSearch()
+          // this.zipcodeSearch()
           this.zipcodeFlg = true;
           if (!zipcode1 || !this.zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
@@ -594,6 +594,10 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
+          if (this.selectedStaff == null){
+            this.zipcodeSearch()
+            return
+          }
       }
     },
 
@@ -601,7 +605,7 @@ export default {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
             this.zipcodeFlg = true;
-            this.zipcodeSearch()
+            // this.zipcodeSearch()
           if (!this.zipcode1 || !zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
             this.zipcodeFlg = false;
@@ -619,6 +623,10 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
+          if (this.selectedStaff == null){
+            this.zipcodeSearch()
+            return
+          }
       }
     },
 
@@ -684,14 +692,14 @@ export default {
             return
           }
           if (
-            !tel1.match(/^\d{2,3}$/) ||
+            !tel1.match(/^\d{2,4}$/) ||
             !this.tel2.match(/^\d{1,4}$/) ||
-            !this.tel3.match(/^\d{4}$/)
+            !this.tel3.match(/^\d{3,4}$/)
           ) {
             this.$set(
               this.errors,
               "tel",
-              "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+              "半角数字で入力してください。（2~4桁＋1~4桁＋3~4桁）"
             );
             this.telFlg = false;
             return
@@ -709,14 +717,14 @@ export default {
             return
           }
           if (
-            !this.tel1.match(/^\d{2,3}$/) ||
+            !this.tel1.match(/^\d{2,4}$/) ||
             !tel2.match(/^\d{1,4}$/) ||
-            !this.tel3.match(/^\d{4}$/)
+            !this.tel3.match(/^\d{3,4}$/)
           ) {
             this.$set(
               this.errors,
               "tel",
-              "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+              "半角数字で入力してください。（2~4桁＋1~4桁＋3~4桁）"
             );
             this.telFlg = false;
             return
@@ -734,14 +742,14 @@ export default {
             return
           }
           if (
-            !this.tel1.match(/^\d{2,3}$/) ||
+            !this.tel1.match(/^\d{2,4}$/) ||
             !this.tel2.match(/^\d{1,4}$/) ||
-            !tel3.match(/^\d{4}$/)
+            !tel3.match(/^\d{3,4}$/)
           ) {
             this.$set(
               this.errors,
               "tel",
-              "半角数字で入力してください。（2~3桁＋1~4桁＋4桁）"
+              "半角数字で入力してください。（2~4桁＋1~4桁＋3~4桁）"
             );
             this.telFlg = false;
             return
