@@ -479,7 +479,7 @@ export default {
             this.zipcodeFlg = false;
             return
           }
-          if (this.selectedStaff == null){
+          if (this.selectedUser == null){
             this.zipcodeSearch()
             return
           } 
@@ -508,7 +508,7 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
-          if (this.selectedStaff == null){
+          if (this.selectedUser == null){
             this.zipcodeSearch()
             return
           }
