@@ -528,7 +528,7 @@ export default {
             this.namekanaFlg = false;
             return
           }
-          if (last_name_kana.length > 50 || this.first_name_kana > 50) {
+          if (last_name_kana.length > 50 || this.first_name_kana.length > 50) {
             this.$set(
               this.errors,
               "namekana",
@@ -560,7 +560,7 @@ export default {
             this.namekanaFlg = false;
             return
           }
-          if (first_name_kana.length > 50 || this.last_name_kana > 50) {
+          if (first_name_kana.length > 50 || this.last_name_kana.length > 50) {
             this.$set(
               this.errors,
               "namekana",
