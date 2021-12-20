@@ -10,15 +10,15 @@
             <th class="column2 fixed">会社名</th>
           </tr>
         </thead>
-        <tbody class="test">
+        <tbody>
           <tr
             v-for="row in table"
-            :key="row.userID"
+            :key="row.UserID"
             @click="selectRow(row)"
             :class="{ highlight: row == selectedUser }"
           >
-            <td class="column1">{{ row.userID }}</td>
-            <td class="column2">{{ row.companyName }}</td>
+            <td class="column1">{{ row.UserID }}</td>
+            <td class="column2">{{ row.CompanyName }}</td>
           </tr>
         </tbody>
       </table>
@@ -96,7 +96,7 @@
           </tr>
           <!-- 電話番号フォーム -->
           <tr>
-            <div class="aaa">
+            <div>
               <th><label for="tel">電話番号</label></th>
               <td><input class="numberInput" type="text" v-model="tel1" /></td>
               <td><span class="hyphen">―</span></td>
@@ -191,7 +191,7 @@ export default {
     //顧客テーブルデータを取得。
     getUser(){
       this.axios
-            .get("/api/GetM_User/")
+            .get("/api/GetUsersList")
             .then((res) => {
               console.log(res.data);
               var string1 = JSON.stringify(res.data);
@@ -216,9 +216,10 @@ export default {
       }else{ 
         pFax = "";
       }
+      console.log(this.company)
       this.axios
         .post(
-          "/api/UserAdd/",
+          "/api/PostUsersAdd",
           {
             CompanyName: this.company,
             PresidentName: this.president,
@@ -234,7 +235,7 @@ export default {
             LastAdd: pNow,
           },
           {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: { "Content-Type": "application/json" },
           }
         )
         .then(() => {
@@ -258,9 +259,9 @@ export default {
       }
       this.axios
         .post(
-          "/api/UserUpdate/",
+          "/api/PostUsersUpdate",
           {
-            UserID: this.selectedUser.userID,
+            UserID: this.selectedUser.UserID,
             CompanyName: this.company,
             PresidentName: this.president,
             ZipCode: this.zipcode1 + this.zipcode2,
@@ -275,7 +276,7 @@ export default {
             LastAdd: null,
           },
           {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: { "Content-Type": "application/json" },
           }
         )
         .then(() => {
@@ -299,9 +300,9 @@ export default {
       }
       this.axios
         .post(
-          "/api/UserDelete/",
+          "/api/PostUsersDelete",
           {
-            UserID: this.selectedUser.userID,
+            UserID: this.selectedUser.UserID,
             CompanyName: this.company,
             PresidentName: this.president,
             ZipCode: this.zipcode1 + this.zipcode2,
@@ -316,10 +317,15 @@ export default {
             LastAdd: null,
           },
           {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: { "Content-Type": "application/json" },
           }
         )
-        .then(() => {
+        .then((res) => {
+          console.log(res.data);
+          console.log(res.status);
+          console.log(res.statusText);
+          console.log(res.headers);
+          console.log(res.config);
           this.getUser()
         })
         .catch((e) => {
@@ -361,19 +367,19 @@ export default {
     //テーブル行選択時の、入力欄へのデータ表示
     selectRow(row) {
       this.selectedUser = row;
-      this.company = row.companyName;
-      this.president = row.presidentName;
-      this.zipcode1 = String(row.zipCode).slice(0, 3);
-      this.zipcode2 = String(row.zipCode).slice(3, 7);
-      this.prefecture = row.prefecture;
-      this.city = row.city;
-      this.building = row.building;
-      var tel = row.tel.split("-");
+      this.company = row.CompanyName;
+      this.president = row.PresidentName;
+      this.zipcode1 = String(row.ZipCode).slice(0, 3);
+      this.zipcode2 = String(row.ZipCode).slice(3, 7);
+      this.prefecture = row.Prefecture;
+      this.city = row.City;
+      this.building = row.Building;
+      var tel = row.Tel.split("-");
       this.tel1 = tel[0];
       this.tel2 = tel[1];
       this.tel3 = tel[2];
-      if (row.fax != "") {
-        var fax = row.fax.split("-");
+      if (row.Fax != "") {
+        var fax = row.Fax.split("-");
         this.fax1 = fax[0];
         this.fax2 = fax[1];
         this.fax3 = fax[2];
@@ -382,7 +388,7 @@ export default {
         this.fax2 = "";
         this.fax3 = "";
       }
-      this.mail = row.mail;
+      this.mail = row.Mail;
     },
 
     //郵便番号から住所を自動取得
@@ -751,6 +757,5 @@ export default {
 
 
 <style scoped>
-@import "../css/style.css" 
-
+@import "../css/style.css";
 </style>
