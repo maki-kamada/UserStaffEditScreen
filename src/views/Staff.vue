@@ -17,9 +17,9 @@
             @click="selectRow(row)"
             :class="{ highlight: row == selectedStaff }"
           >
-            <td class="column1">{{ row.staffID }}</td>
+            <td class="column1">{{ row.StaffID }}</td>
             <td class="column2">
-              {{ row.lastName }} {{ row.firstName }}
+              {{ row.LastName }} {{ row.FirstName }}
             </td>
           </tr>
         </tbody>
@@ -118,7 +118,7 @@
           </tr>
           <!-- 電話番号フォーム -->
           <tr>
-            <div class="aaa">
+            <div>
               <th><label for="tel">電話番号</label></th>
               <td><input class="numberInput" type="text" v-model="tel1" /></td>
               <td><span class="hyphen">―</span></td>
@@ -213,7 +213,7 @@ export default {
     //社員テーブルデータを取得。
     getStaff() {
       this.axios
-        .get("/api/GetM_Staff/")
+        .get("/api/GetStaffsList")
         .then((res) => {
           console.log(res.data);
           var string1 = JSON.stringify(res.data);
@@ -221,7 +221,7 @@ export default {
           console.log(arr);
           this.table = arr;
           this.table.sort((a, b) => {
-            return a.staffID - b.staffID;
+            return a.StaffID - b.StaffID;
           });
           this.clear();
         })
@@ -236,7 +236,7 @@ export default {
         var pNow = new Date();
         this.axios
           .post(
-            "/api/StaffAdd/",
+          "/api/PostStaffsAdd",
             {
               StaffID: this.id,
               LastName: this.last_name,
@@ -254,7 +254,7 @@ export default {
               LastAdd: pNow,
             },
             {
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              headers: { "Content-Type": "application/json" },
             }
           )
           .then(() => {
@@ -272,9 +272,9 @@ export default {
         var pNow = new Date();
         this.axios
           .post(
-            "/api/StaffUpdate/",
+            "/api/PostStaffsUpdate",
             {
-              ID: this.selectedStaff.id,
+              ID: this.selectedStaff.ID,
               StaffID: this.id,
               LastName: this.last_name,
               FirstName: this.first_name,
@@ -291,7 +291,7 @@ export default {
               LastAdd: null,
             },
             {
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              headers: { "Content-Type": "application/json" },
             }
           )
           .then(() => {
@@ -309,9 +309,9 @@ export default {
         var pNow = new Date();
         this.axios
           .post(
-            "/api/StaffDelete/",
+            "/api/PostStaffsDelete",
             {
-              ID: this.selectedStaff.id,
+              ID: this.selectedStaff.ID,
               StaffID: this.id,
               LastName: this.last_name,
               FirstName: this.first_name,
@@ -328,7 +328,7 @@ export default {
               LastAdd: null,
             },
             {
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              headers: { "Content-Type": "application/json" },
             }
           )
           .then(() => {
@@ -375,21 +375,21 @@ export default {
     //テーブル行選択時の、入力欄へのデータ表示
     selectRow(row) {
       this.selectedStaff = row;
-      this.id = String(row.staffID);
-      this.last_name = row.lastName;
-      this.first_name = row.firstName;
-      this.last_name_kana = row.lastNameKana;
-      this.first_name_kana = row.firstNameKana;
-      this.zipcode1 = String(row.zipCode).slice(0, 3);
-      this.zipcode2 = String(row.zipCode).slice(3, 7);
-      this.prefecture = row.prefecture;
-      this.city = row.city;
-      this.building = row.building;
-      var tel = row.tel.split("-");
+      this.id = String(row.StaffID);
+      this.last_name = row.LastName;
+      this.first_name = row.FirstName;
+      this.last_name_kana = row.LastNameKana;
+      this.first_name_kana = row.FirstNameKana;
+      this.zipcode1 = String(row.ZipCode).slice(0, 3);
+      this.zipcode2 = String(row.ZipCode).slice(3, 7);
+      this.prefecture = row.Prefecture;
+      this.city = row.City;
+      this.building = row.Building;
+      var tel = row.Tel.split("-");
       this.tel1 = tel[0];
       this.tel2 = tel[1];
       this.tel3 = tel[2];
-      this.mail = row.mail;
+      this.mail = row.Mail;
     },
 
     //郵便番号から住所を自動取得
@@ -467,14 +467,14 @@ export default {
             this.idFlg = false;
             return
           }
-          var overlapCheck1 = this.table.find(value => value.staffID == id);
+          var overlapCheck1 = this.table.find(value => value.StaffID == id);
           if (overlapCheck1 != null && this.selectedStaff == null){
             this.$set(this.errors, "id", "重複した社員コードは登録できません。");
             this.idFlg = false;
             return
           }else if (this.selectedStaff != null){
-            var exception = this.selectedStaff.staffID;
-            var overlapCheck2 = this.table.find(value => value.staffID == id && value.staffID != exception);
+            var exception = this.selectedStaff.StaffID;
+            var overlapCheck2 = this.table.find(value => value.StaffID == id && value.StaffID != exception);
             if (overlapCheck2 != null) {
               this.$set(this.errors, "id", "重複した社員コードは登録できません。");
               this.idFlg = false;
