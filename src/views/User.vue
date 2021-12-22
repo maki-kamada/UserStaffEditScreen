@@ -184,6 +184,7 @@ export default {
       errors: {},
       selectedUser: null,
       clearFlg: false,
+      zipcodeSearchFlg: false,
       table: [],
     };
   },
@@ -336,6 +337,7 @@ export default {
 
     //入力欄をクリア。テーブル行選択をクリア。
     clear() {
+      this.zipcodeSearchFlg = false;
       this.company = "";
       this.president = "";
       this.zipcode1 = "";
@@ -366,6 +368,7 @@ export default {
 
     //テーブル行選択時の、入力欄へのデータ表示
     selectRow(row) {
+      this.zipcodeSearchFlg = true;
       this.selectedUser = row;
       this.company = row.CompanyName;
       this.president = row.PresidentName;
@@ -393,20 +396,32 @@ export default {
 
     //郵便番号から住所を自動取得
     zipcodeSearch() {
-      var clearButton = document.getElementById("clear_button");
-      clearButton.disabled = true;
-      this.axios
-              .get(
-                "https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
-                  this.zipcode1 +
-                  this.zipcode2
+      switch(this.zipcodeSearchFlg){
+        case false:
+          console.log("falseのとき")
+          var clearButton = document.getElementById("clear_button");
+          clearButton.disabled = true;
+          this.axios
+          .get("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" +
+                this.zipcode1 +
+                this.zipcode2
               )
-              .then((res) => {
+          .then((res) => {
                 this.prefecture = res.data.results[0].address1;
                 this.city =
                   res.data.results[0].address2 + res.data.results[0].address3;
                 clearButton.disabled = false;
-              });
+          });
+          break;
+        
+        case true:
+          console.log("trueのとき")
+          this.zipcodeSearchFlg = false;
+          break;
+        
+        default:
+          break;
+      }
     }
   },
 
@@ -490,10 +505,12 @@ export default {
             this.zipcodeFlg = false;
             return
           }
-          if (this.selectedUser == null){
+          if(this.zipcodeSearchFlg == false)
+          {
+            console.log("aのとき")
             this.zipcodeSearch()
             return
-          } 
+          }
       }
     },
 
@@ -519,11 +536,8 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
-          if (this.selectedUser == null){
-            this.zipcodeSearch().then(()=>{
-              return
-            })
-          }
+            this.zipcodeSearch()
+            return
       }
     },
 
