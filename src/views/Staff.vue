@@ -403,9 +403,11 @@ export default {
                   this.zipcode2
               )
               .then((res) => {
+                if(res.data.results != null){
                 this.prefecture = res.data.results[0].address1;
                 this.city =
                   res.data.results[0].address2 + res.data.results[0].address3;
+                  }
                 clearButton.disabled = false;
               });
     },
@@ -467,12 +469,14 @@ export default {
             this.idFlg = false;
             return
           }
-          var overlapCheck1 = this.table.find(value => value.StaffID == id);
-          if (overlapCheck1 != null && this.selectedStaff == null){
+          if (this.selectedStaff == null){
+            var overlapCheck1 = this.table.find(value => value.StaffID == id);
+            if(overlapCheck1 != null){
             this.$set(this.errors, "id", "重複した社員コードは登録できません。");
             this.idFlg = false;
             return
-          }else if (this.selectedStaff != null){
+            }
+          }else{
             var exception = this.selectedStaff.StaffID;
             var overlapCheck2 = this.table.find(value => value.StaffID == id && value.StaffID != exception);
             if (overlapCheck2 != null) {
@@ -544,9 +548,6 @@ export default {
             this.namekanaFlg = false;
             return
           } 
-          // else {
-          //   this.$delete(this.errors, "namekana");
-            // this.namekanaFlg = true;
       }
     },
 
@@ -582,7 +583,6 @@ export default {
     zipcode1(zipcode1) {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
-          // this.zipcodeSearch()
           this.zipcodeFlg = true;
           if (!zipcode1 || !this.zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
@@ -601,7 +601,7 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
-          if (this.selectedStaff == null){
+          if (this.selectedStaff == null || String(this.selectedStaff.ZipCode).slice(0, 3) != zipcode1){
             this.zipcodeSearch()
             return
           }
@@ -612,7 +612,6 @@ export default {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
             this.zipcodeFlg = true;
-            // this.zipcodeSearch()
           if (!this.zipcode1 || !zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
             this.zipcodeFlg = false;
@@ -630,7 +629,7 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
-          if (this.selectedStaff == null){
+          if (this.selectedStaff == null || String(this.selectedStaff.ZipCode).slice(3, 7) != zipcode2){
             this.zipcodeSearch()
             return
           }
