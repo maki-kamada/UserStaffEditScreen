@@ -40,6 +40,7 @@ body {
   }
   .data td {
     padding: 10px;
+    height: 29px;
     /* width: auto; */
   }
 
