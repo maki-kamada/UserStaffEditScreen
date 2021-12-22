@@ -321,12 +321,7 @@ export default {
             headers: { "Content-Type": "application/json" },
           }
         )
-        .then((res) => {
-          console.log(res.data);
-          console.log(res.status);
-          console.log(res.statusText);
-          console.log(res.headers);
-          console.log(res.config);
+        .then(() => {
           this.getUser()
         })
         .catch((e) => {
@@ -407,9 +402,11 @@ export default {
                 this.zipcode2
               )
           .then((res) => {
+            if (res.data.results != null) {
                 this.prefecture = res.data.results[0].address1;
                 this.city =
                   res.data.results[0].address2 + res.data.results[0].address3;
+                } 
                 clearButton.disabled = false;
           });
           break;
@@ -518,7 +515,7 @@ export default {
       if (this.clearFlg == false) {
           this.$delete(this.errors, "zipcode");
             this.zipcodeFlg = true;
-            // this.zipcodeSearch()
+            this.zipcodeSearch()
           if (!this.zipcode1 || !zipcode2) {
             this.$set(this.errors, "zipcode", "必須入力項目です。");
             this.zipcodeFlg = false;
@@ -536,8 +533,8 @@ export default {
             this.zipcodeFlg = false;
             return
           } 
-            this.zipcodeSearch()
-            return
+            // this.zipcodeSearch()
+            // return
       }
     },
 
